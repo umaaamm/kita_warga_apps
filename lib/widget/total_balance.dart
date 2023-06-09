@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:kita_warga_apps/model/dashboard.dart';
+import 'package:kita_warga_apps/model/dashboard_response.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:kita_warga_apps/utils/currency_format.dart';
 
 class TotalBalance extends StatelessWidget {
-  const TotalBalance({Key? key}) : super(key: key);
+  final String totalSaldo;
 
+  TotalBalance(this.totalSaldo);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -16,7 +21,8 @@ class TotalBalance extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Total Saldo', style: regularTextStyle.copyWith(fontSize: 12, color: blueColor),),
-                Text('Rp 2.345.678', style: blackTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: blueColor),)
+                Text(
+                  CurrencyFormat.convertToIdr(int.parse(totalSaldo),0), style: blackTextStyle.copyWith(fontSize: 20, fontWeight: FontWeight.w700, color: blueColor),)
               ],
             ),
           ),
