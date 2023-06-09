@@ -19,10 +19,8 @@ class LoginProvider with ChangeNotifier {
   }
 
   Future<LoginResponse> login(LoginRequest loginRequest) async {
-    // print(loginRequest);
     LoginResponse response = await _repository.getLogin(loginRequest);
     _token = response.login.accessToken;
-    // print(response);
     if (response.login.accessToken.isNotEmpty) {
       saveSession(response.login);
     }

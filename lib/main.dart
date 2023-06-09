@@ -20,6 +20,7 @@ class MainApp extends StatelessWidget {
             return LoginProvider();
           },
           child: const MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: SplashPage(),
           ),
         );

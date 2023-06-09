@@ -71,14 +71,14 @@ class _BodyPagesState extends State<Body> {
             AlreadyHaveAnAccountCheck(
               login: false,
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return HomePages();
-                    },
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) {
+                //       return HomePages();
+                //     },
+                //   ),
+                // );
               },
             ),
             OrDivider(),
