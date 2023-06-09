@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard.dart';
 import 'package:kita_warga_apps/model/dashboard_response.dart';
@@ -89,32 +90,32 @@ class _HomePagesState extends State<HomePages> {
                     children: [
                       TotalBalance(data.dashboard.total_saldo),
                       SizedBox(
-                        height: 30,
+                        height: 20.h,
                       ),
-                      Text('Laporan Singkat',
+                      Text('Laporan Singkat kali',
                           style: regularTextStyle.copyWith(
-                              fontSize: 16,
+                              fontSize: 14.sp,
                               color: blueColor,
                               fontWeight: FontWeight.w700)),
                       SizedBox(
-                        height: 15,
+                        height: 15.h,
                       ),
-                      SummaryHome(DashboardResponse(data.dashboard, data.error)),
+                      SummaryHome(
+                        DashboardResponse(data.dashboard, data.error),
+                      ),
                       SizedBox(
-                        height: 15,
+                        height: 15.h,
                       ),
-                      // SummaryHome(DashboardResponse(data.dashboard, data.error)),
-                      // Spacer(),
                     ],
                   ),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.62,
+                  height: 450.h,
                   decoration: BoxDecoration(
-                    color: Color(0xFFF4F6F8),
+                    color: lightBackground,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50)),
+                        topLeft: Radius.circular(35.r),
+                        topRight: Radius.circular(35.r)),
                   ),
                   child: LastTransaction(),
                 ),

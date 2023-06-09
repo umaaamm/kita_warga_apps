@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/theme.dart';
 
 class FloatingFooter extends StatelessWidget {
@@ -9,9 +10,9 @@ class FloatingFooter extends StatelessWidget {
     return Container(
       height: 70,
       width: MediaQuery.of(context).size.width - (2 * 24),
-      margin: EdgeInsets.symmetric(horizontal: 24),
+      margin: EdgeInsets.symmetric(horizontal: 20.w),
       decoration: BoxDecoration(
-          color: whiteColor, borderRadius: BorderRadius.circular(23)),
+          color: whiteColor, borderRadius: BorderRadius.circular(20.r)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -21,9 +22,13 @@ class FloatingFooter extends StatelessWidget {
               Icon(
                 Icons.home,
                 color: blueColor,
-                size: 30.0,
+                size: 30.sp,
               ),
-              Text('Beranda', style: blackTextStyle.copyWith(color: blueColor, fontSize: 12),)
+              Text(
+                'Beranda',
+                style:
+                    blackTextStyle.copyWith(color: blueColor, fontSize: 12.sp),
+              )
             ],
           ),
           Column(
@@ -32,9 +37,13 @@ class FloatingFooter extends StatelessWidget {
               Icon(
                 Icons.add_circle,
                 color: blueColor,
-                size: 30.0,
+                size: 30.sp,
               ),
-              Text('Tambah Data', style: blackTextStyle.copyWith(color: blueColor, fontSize: 12),)
+              Text(
+                'Tambah Data',
+                style:
+                    blackTextStyle.copyWith(color: blueColor, fontSize: 12.sp),
+              )
             ],
           ),
           Column(
@@ -43,9 +52,13 @@ class FloatingFooter extends StatelessWidget {
               Icon(
                 Icons.person,
                 color: blueColor,
-                size: 30.0,
+                size: 30.sp,
               ),
-              Text('Profil', style: blackTextStyle.copyWith(color: blueColor, fontSize: 12),)
+              Text(
+                'Profil',
+                style:
+                    blackTextStyle.copyWith(color: blueColor, fontSize: 12.sp),
+              )
             ],
           ),
         ],
