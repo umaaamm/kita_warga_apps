@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kita_warga_apps/pages/login/login.dart';
+import 'package:kita_warga_apps/provider/login_provider.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:provider/provider.dart';
 
 class FloatingFooter extends StatelessWidget {
   const FloatingFooter({Key? key}) : super(key: key);
@@ -61,8 +64,30 @@ class FloatingFooter extends StatelessWidget {
               )
             ],
           ),
+          TextButton(
+            onPressed:() {
+            _logout(context);
+          } , child: Text(
+            "Let's take a picture",
+            style: TextStyle(
+              color: Color(0xffffffff),
+            ),
+          ),
+          ),
         ],
       ),
     );
   }
+
+  Future<void> _logout(BuildContext context) async {
+    await context.read<LoginProvider>().logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return LoginPages();
+      }),
+          (Route<dynamic> route) => false,
+    );
+  }
+
 }

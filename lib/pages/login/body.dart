@@ -137,11 +137,11 @@ class _BodyPagesState extends State<Body> {
     LoginProvider provider = context.read<LoginProvider>();
     LoginResponse response =
         await provider.login(LoginRequest(email, password));
-    if (response.login.accessToken == null) {
+    if (response.login.accessToken.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            response.error ?? 'Oops! Something went wrong...',
+            'Oops! Ada yang salah, pastikan email atau password anda benar.',
           ),
         ),
       );
