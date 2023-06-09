@@ -68,9 +68,9 @@ class FloatingFooter extends StatelessWidget {
             onPressed:() {
             _logout(context);
           } , child: Text(
-            "Let's take a picture",
+            "Logout",
             style: TextStyle(
-              color: Color(0xffffffff),
+              color: blueColor,
             ),
           ),
           ),
