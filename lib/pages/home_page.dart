@@ -101,7 +101,7 @@ class _HomePagesState extends State<HomePages> {
                       SizedBox(
                         height: 20.h,
                       ),
-                      Text('Laporan Singkat kali',
+                      Text('Laporan Singkat',
                           style: regularTextStyle.copyWith(
                               fontSize: 14.sp,
                               color: blueColor,

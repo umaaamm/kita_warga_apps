@@ -4,20 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard_last_trx_response.dart';
-import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 import 'package:kita_warga_apps/utils/text_format.dart';
-import 'package:kita_warga_apps/widget/menu/menu_kasbon.dart';
-import 'package:kita_warga_apps/widget/menu/menu_pengeluaran.dart';
-import 'package:kita_warga_apps/widget/menu/menu_warga.dart';
 
-class LastTransaction extends StatefulWidget {
+class ListWarga extends StatefulWidget {
   @override
-  _LastTransactionState createState() => _LastTransactionState();
+  _ListWargaState createState() => _ListWargaState();
 }
 
-class _LastTransactionState extends State<LastTransaction> {
+class _ListWargaState extends State<ListWarga> {
   @override
   void initState() {
     super.initState();
@@ -82,43 +78,9 @@ class _LastTransactionState extends State<LastTransaction> {
         Container(
           alignment: Alignment.centerLeft,
           margin:
-              EdgeInsets.only(top: 20.h, left: 20.w, right: 20.w, bottom: 15.h),
+              EdgeInsets.only(top: 12.h, left: 12.w, right: 12.w, bottom: 12.h),
           child: Text(
-            'Fitur Aplikasi',
-            style: blackTextStyle.copyWith(
-              fontSize: 16.sp,
-            ),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            menuPengeluaran(
-              onPressed: () {},
-            ),
-            menuWarga(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return WargaPages();
-                    },
-                  ),
-                );
-              },
-            ),
-            menuKasbon(
-              onPressed: () {},
-            )
-          ],
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          margin:
-              EdgeInsets.only(top: 30.h, left: 15.w, right: 15.w, bottom: 20.h),
-          child: Text(
-            'Transaksi Terakhir',
+            'Daftar Warga',
             style: blackTextStyle.copyWith(
               fontSize: 16,
             ),
@@ -126,7 +88,6 @@ class _LastTransactionState extends State<LastTransaction> {
         ),
         Expanded(
           child: Container(
-            color: whiteColor30,
             child: ListView.builder(
               scrollDirection: Axis.vertical,
               itemCount: data.dashboardLastTrx.length,
@@ -138,7 +99,7 @@ class _LastTransactionState extends State<LastTransaction> {
                       right: 10.w,
                       bottom: index == lastTrx.length - 1 ? 75.h : 8.h),
                   decoration: BoxDecoration(
-                      color: blueColor,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r)),
                   child: Row(
                     children: [
@@ -152,7 +113,7 @@ class _LastTransactionState extends State<LastTransaction> {
                                 width: 60.h,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.r),
-                                  color: whiteColor30,
+                                  color: blueColor,
                                 ),
                                 child: Center(
                                   child: Text(
@@ -172,7 +133,7 @@ class _LastTransactionState extends State<LastTransaction> {
                               Text(
                                 lastTrx[index].nama,
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 14, color: yellowColor),
+                                    fontSize: 21, color: blueColor, fontWeight: FontWeight.w700),
                               ),
                               Text(
                                 CurrencyFormat.convertToIdr(
@@ -180,13 +141,13 @@ class _LastTransactionState extends State<LastTransaction> {
                                 style: regularTextStyle.copyWith(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w700,
-                                    color: yellowColor),
+                                    color: blueColor),
                               ),
                               Text(
                                 CurrencyFormat.convertDateEpoch(
                                     int.parse(lastTrx[index].tanggal)),
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 12, color: yellowColor),
+                                    fontSize: 12, color: blueColor),
                               ),
                             ],
                           ),

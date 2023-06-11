@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
+import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/provider/login_provider.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:provider/provider.dart';
@@ -65,14 +66,15 @@ class FloatingFooter extends StatelessWidget {
             ],
           ),
           TextButton(
-            onPressed:() {
-            _logout(context);
-          } , child: Text(
-            "Logout",
-            style: TextStyle(
-              color: blueColor,
+            onPressed: () {
+              _logout(context);
+            },
+            child: Text(
+              "Logout",
+              style: TextStyle(
+                color: blueColor,
+              ),
             ),
-          ),
           ),
         ],
       ),
@@ -86,8 +88,7 @@ class FloatingFooter extends StatelessWidget {
       MaterialPageRoute(builder: (BuildContext context) {
         return LoginPages();
       }),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
   }
-
 }
