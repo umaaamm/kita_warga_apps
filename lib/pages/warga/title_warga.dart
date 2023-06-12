@@ -4,7 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../theme.dart';
 
 class title_warga extends StatelessWidget {
+  final String Title;
+  final String SubTitle;
+
   const title_warga({
+    required this.Title,
+    required this.SubTitle,
     super.key,
   });
 
@@ -16,14 +21,14 @@ class title_warga extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Data Warga',
+            Title,
             style: regularTextStyle.copyWith(
                 fontSize: 20.sp,
                 color: blueColor,
                 fontWeight: FontWeight.w700),
           ),
           Text(
-            'Daftar Warga yang anda kelola',
+            SubTitle,
             style: regularTextStyle.copyWith(
                 fontSize: 14.sp, color: blueColor),
           ),

@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/components/rounded_input_search.dart';
+import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
 import 'package:kita_warga_apps/pages/warga/list_shorting.dart';
 import 'package:kita_warga_apps/pages/warga/list_warga.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
@@ -30,7 +31,14 @@ class _WargaPagesState extends State<WargaPages> {
               color: Colors.black,
               icon: new Icon(Icons.add_circle),
               onPressed: () {
-                print("hahah");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AddWargaPages();
+                    },
+                  ),
+                );
               }),
         ],
         leading: new IconButton(
@@ -46,7 +54,7 @@ class _WargaPagesState extends State<WargaPages> {
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
           children: [
-            title_warga(),
+            title_warga(Title: "Daftar Warga",SubTitle: "Daftar Warga yang anda Kelola"),
             SizedBox(
               height: ScreenUtil().setHeight(10),
             ),
