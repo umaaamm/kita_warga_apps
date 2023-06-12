@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/model/dashboard_response.dart';
-import 'package:kita_warga_apps/pages/login/login.dart';
-import 'package:kita_warga_apps/provider/login_provider.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/widget/floating_footer.dart';
 import 'package:kita_warga_apps/widget/last_transaction.dart';
 import 'package:kita_warga_apps/widget/summary_home.dart';
 import 'package:kita_warga_apps/widget/total_balance.dart';
-import 'package:provider/provider.dart';
 
 import '../bloc/get_dashboard.dart';
 
@@ -133,17 +130,6 @@ class _HomePagesState extends State<HomePages> {
         floatingActionButton: FloatingFooter(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-    );
-  }
-
-  Future<void> _logout(BuildContext context) async {
-    await context.read<LoginProvider>().logout();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) {
-        return LoginPages();
-      }),
-      (Route<dynamic> route) => false,
     );
   }
 }

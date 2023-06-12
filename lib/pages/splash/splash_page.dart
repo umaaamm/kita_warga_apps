@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kita_warga_apps/pages/home_page.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
-import 'package:kita_warga_apps/provider/login_provider.dart';
-import 'package:provider/provider.dart';
+
+import '../../bloc/bloc_shared_preference.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -13,7 +13,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   Future<void> _initData() async {
-    LoginProvider provider = context.read<LoginProvider>();
+    BlockPreference provider = BlockPreference();
     await provider.init();
     Navigator.pushReplacement(
       context,

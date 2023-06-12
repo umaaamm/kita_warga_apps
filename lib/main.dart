@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/pages/splash/splash_page.dart';
-import 'package:kita_warga_apps/provider/login_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:kita_warga_apps/repository/login_repository.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,9 +15,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (context, child) {
-        return ChangeNotifierProvider(
+        return RepositoryProvider(
           create: (BuildContext context) {
-            return LoginProvider();
+            return LoginRepository();
           },
           child: const MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -25,14 +25,6 @@ class MainApp extends StatelessWidget {
           ),
         );
       },
-      // child: ChangeNotifierProvider(
-      //   create: (BuildContext context) {
-      //     return LoginProvider();
-      //   },
-      //   child: const MaterialApp(
-      //     home: SplashPage(),
-      //   ),
-      // ),
     );
   }
 }

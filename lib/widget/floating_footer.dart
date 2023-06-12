@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
-import 'package:kita_warga_apps/provider/login_provider.dart';
 import 'package:kita_warga_apps/theme.dart';
-import 'package:provider/provider.dart';
 
 class FloatingFooter extends StatelessWidget {
   const FloatingFooter({Key? key}) : super(key: key);
@@ -81,7 +80,8 @@ class FloatingFooter extends StatelessWidget {
   }
 
   Future<void> _logout(BuildContext context) async {
-    await context.read<LoginProvider>().logout();
+    BlockPreference provider = BlockPreference();
+    await provider.logout();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (BuildContext context) {
