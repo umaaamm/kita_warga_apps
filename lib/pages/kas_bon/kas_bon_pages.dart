@@ -1,23 +1,23 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/components/rounded_input_search.dart';
-import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
+import 'package:kita_warga_apps/pages/kas_bon/list_kas_bon.dart';
 import 'package:kita_warga_apps/pages/warga/list_shorting.dart';
 import 'package:kita_warga_apps/pages/warga/list_warga.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
+import 'package:kita_warga_apps/theme.dart';
 
-import '../../theme.dart';
+class KasBonPages extends StatefulWidget {
+  const KasBonPages({super.key});
 
-class WargaPages extends StatefulWidget {
   @override
-  _WargaPagesState createState() => _WargaPagesState();
+  State<KasBonPages> createState() => _KasBonPagesState();
 }
 
-class _WargaPagesState extends State<WargaPages> {
+class _KasBonPagesState extends State<KasBonPages> {
   var dataTest = ['Semua', 'Terbaru', 'A-z', 'Z-a', 'Terlama'];
   bool isTapped = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,16 +30,7 @@ class _WargaPagesState extends State<WargaPages> {
           new IconButton(
               color: Colors.black,
               icon: new Icon(Icons.add_circle),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return AddWargaPages();
-                    },
-                  ),
-                );
-              }),
+              onPressed: () {}),
         ],
         leading: new IconButton(
             color: Colors.black,
@@ -52,12 +43,9 @@ class _WargaPagesState extends State<WargaPages> {
         bottom: false,
         child: ListView(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          // physics: ClampingScrollPhysics(),
+          physics: ClampingScrollPhysics(),
           children: [
-            title_warga(
-                Title: "Daftar Warga",
-                SubTitle: "Daftar Warga yang anda Kelola"),
+            title_warga(Title: "Kas Bon", SubTitle: "Daftar Kas Bon"),
             SizedBox(
               height: ScreenUtil().setHeight(10),
             ),
@@ -69,14 +57,14 @@ class _WargaPagesState extends State<WargaPages> {
                 isTapped: isTapped,
                 isActive: 0),
             Padding(
-              padding: EdgeInsets.only(right: 20, left: 20),
+              padding: EdgeInsets.only(right: 20, left: 20, top: 5.r),
               child: RoundedInputSearch(
                 hintText: "Masukkan nama karyawan",
                 onChanged: (value) {},
               ),
             ),
             SizedBox(
-              height: ScreenUtil().setHeight(10),
+              height: ScreenUtil().setHeight(5),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.635,
@@ -86,7 +74,7 @@ class _WargaPagesState extends State<WargaPages> {
                     topLeft: Radius.circular(16.r),
                     topRight: Radius.circular(16.r)),
               ),
-              child: ListWarga(),
+              child: ListKasBon(),
             ),
           ],
         ),

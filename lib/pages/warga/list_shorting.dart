@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/theme.dart';
@@ -32,7 +30,7 @@ class _ListShortingState extends State<ListShorting> {
         itemCount: widget.dataTest.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: ()  {
+            onTap: () {
               widget.onPressed();
               setState(() {
                 widget.isActive = index;
@@ -40,20 +38,24 @@ class _ListShortingState extends State<ListShorting> {
             },
             child: Center(
               child: Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  color: widget.isActive == index ? blueColor: greyColorLight,
-                ),
-                child: Text(
-                  widget.dataTest[index],
-                  style: regularTextStyle.copyWith(
-                      fontSize: 17.sp, color: widget.isActive == index ? Colors.white : blueColor),
+                padding: EdgeInsets.only(left: 20),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                    color:
+                        widget.isActive == index ? blueColor : greyColorLight,
+                  ),
+                  child: Text(
+                    widget.dataTest[index],
+                    style: regularTextStyle.copyWith(
+                        fontSize: 17.sp,
+                        color: widget.isActive == index
+                            ? Colors.white
+                            : blueColor),
+                  ),
                 ),
               ),
-          ),
             ),
           );
         },

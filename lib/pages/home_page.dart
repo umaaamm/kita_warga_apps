@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard.dart';
 import 'package:kita_warga_apps/model/dashboard_response.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
 import 'package:kita_warga_apps/provider/login_provider.dart';

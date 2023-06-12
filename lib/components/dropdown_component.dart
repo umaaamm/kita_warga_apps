@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kita_warga_apps/pages/warga/title_warga.dart';
 
 import '../theme.dart';
 import '../utils/constant.dart';
@@ -28,8 +27,8 @@ class dropdownCustom extends StatelessWidget {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: title,
-          labelStyle: regularTextStyle.copyWith(
-              fontSize: 16.sp, color: blueColor),
+          labelStyle:
+              regularTextStyle.copyWith(fontSize: 16.sp, color: blueColor),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: blueColor),
           ),
@@ -53,8 +52,7 @@ class dropdownCustom extends StatelessWidget {
               color: blueColorConstant,
             ),
             elevation: 16,
-            style: regularTextStyle.copyWith(
-                fontSize: 16.sp, color: blueColor),
+            style: regularTextStyle.copyWith(fontSize: 16.sp, color: blueColor),
             underline: SizedBox(),
             onChanged: onChanged,
             items: list.map<DropdownMenuItem<String>>((String value) {
