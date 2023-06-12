@@ -13,6 +13,7 @@ import 'package:kita_warga_apps/pages/warga/title_warga.dart';
 import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../repository/warga_repository.dart';
 
@@ -32,19 +33,19 @@ class _AddWargaPagesState extends State<AddWargaPages> {
   String dropdownValue = list.first;
   bool checkValueRT = false;
   bool checkValueRW = false;
-  String id_warga = "1",
-      nama_warga = "umam",
-      blok_rumah = "V",
-      nomor_rumah = "23",
-      email = "umam.tekno@gmail.com",
-      nomor_hp = "081290766692",
-      is_rw = "false",
-      is_rt = "true",
-      id_rt = "1",
-      id_rw = "1",
-      id_perumahan = "1",
-      status_pernikahan = "kawin",
-      jenis_kelamin = "laki-laki";
+  bool is_rw = false, is_rt = false;
+  var uuid = Uuid();
+  String id_warga = "",
+      nama_warga = "",
+      blok_rumah = "",
+      nomor_rumah = "",
+      email = "",
+      nomor_hp = "",
+      id_rt = "",
+      id_rw = "",
+      id_perumahan = "",
+      status_pernikahan = "",
+      jenis_kelamin = "";
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +86,15 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                     labelText: "Nama Warga",
                     hintText: "Masukkan nama warga",
                     onChanged: (value) {
-                      print(value);
+                      setState(() {
+                        nama_warga = value;
+                      });
                     }),
                 TextInputBorderBottom(
                     labelText: "Status Perkawinan",
                     hintText: "Masukkan status perkawinan",
                     onChanged: (value) {
-                      print(value);
+                      status_pernikahan = value;
                     }),
                 dropdownCustom(
                     textHint: "Jenis Kelamin",
@@ -99,6 +102,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                     onChanged: (value) {
                       setState(() {
                         dropdownValue = value!;
+                        jenis_kelamin = value;
                       });
                     },
                     dropdownValue: dropdownValue,
@@ -107,43 +111,44 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                     labelText: "Email",
                     hintText: "Masukkan email warga",
                     onChanged: (value) {
-                      print(value);
+                      email = value;
                     }),
                 TextInputBorderBottom(
                     labelText: "No Handphone",
                     hintText: "Masukkan nomor handphone",
                     onChanged: (value) {
-                      print(value);
+                      nomor_hp = value;
                     }),
                 TextInputBorderBottom(
                     labelText: "Nomor Rumah",
                     hintText: "Masukkan Nomor rumah",
                     onChanged: (value) {
-                      print(value);
+                      nomor_rumah = value;
                     }),
                 TextInputBorderBottom(
                     labelText: "Blok Rumah",
                     hintText: "Masukkan blok rumah warga",
                     onChanged: (value) {
-                      print(value);
+                      blok_rumah = value;
                     }),
                 TextInputBorderBottom(
                     labelText: "Nomor RT",
                     hintText: "Masukkan Nomor RT",
                     onChanged: (value) {
-                      print(value);
+                      id_rt = value;
                     }),
                 TextInputBorderBottom(
                     labelText: "Nomor RW",
                     hintText: "Masukkan Nomor RW",
                     onChanged: (value) {
-                      print(value);
+                      id_rw = value;
                     }),
                 SwitchButton(
                   title: "Apakah Warga Menjadi Ketua RT",
                   toggleSwitchState: (value) {
                     setState(() {
                       checkValueRT = value!;
+                      is_rt = value!;
                     });
                   },
                   checkValue: checkValueRT,
@@ -153,6 +158,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                   toggleSwitchState: (value) {
                     setState(() {
                       checkValueRW = value!;
+                      is_rw = value!;
                     });
                   },
                   checkValue: checkValueRW,
@@ -222,7 +228,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
   void _postData(context) {
     BlocProvider.of<WargaBloc>(context).add(
       WargaRequest(
-          id_warga,
+          uuid.v1(),
           nama_warga,
           blok_rumah,
           nomor_rumah,
@@ -232,7 +238,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
           is_rt,
           id_rw,
           id_rt,
-          id_perumahan,
+          uuid.v1(),
           status_pernikahan,
           jenis_kelamin),
     );

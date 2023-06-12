@@ -7,8 +7,8 @@ class WargaRequest {
   final String nomor_rumah;
   final String email;
   final String nomor_hp;
-  final String is_rw;
-  final String is_rt;
+  final bool is_rw;
+  final bool is_rt;
   final String id_rw;
   final String id_rt;
   final String id_perumahan;
