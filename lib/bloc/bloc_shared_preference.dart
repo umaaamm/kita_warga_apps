@@ -9,8 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class BlockPreference {
   String? _token;
+  String? _idPerumahan;
+  String? _idPerngurus;
+  String? _idWarga;
   late final SharedPreferences _preferences;
   String? get token => _token;
+  String? get idPerumahan => _idPerumahan;
+  String? get idPengurus => _idPerngurus;
+  String? get idWarga => _idWarga;
 
   Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
@@ -22,5 +28,12 @@ class BlockPreference {
     _preferences = await SharedPreferences.getInstance();
     await _preferences.remove(AppConstant.accessToken);
     await _preferences.remove(AppConstant.isLogin);
+  }
+
+  Future<void> getDataAccount() async {
+    _preferences = await SharedPreferences.getInstance();
+    _idWarga = _preferences.getString(AppConstant.idWarga);
+    _idPerumahan = _preferences.getString(AppConstant.idPerumahan);
+    _idPerngurus = _preferences.getString(AppConstant.idPengurus);
   }
 }

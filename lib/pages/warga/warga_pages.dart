@@ -71,7 +71,7 @@ class _WargaPagesState extends State<WargaPages> {
             Padding(
               padding: EdgeInsets.only(right: 20, left: 20),
               child: RoundedInputSearch(
-                hintText: "Masukkan nama karyawan",
+                hintText: "Masukkan nama warga",
                 onChanged: (value) {},
               ),
             ),
@@ -86,7 +86,7 @@ class _WargaPagesState extends State<WargaPages> {
                     topLeft: Radius.circular(16.r),
                     topRight: Radius.circular(16.r)),
               ),
-              child: ListWarga(),
+              child: ListWargaWidget(),
             ),
           ],
         ),

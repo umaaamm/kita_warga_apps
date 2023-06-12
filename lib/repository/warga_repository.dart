@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
+import 'package:kita_warga_apps/model/list_warga_response.dart';
 import 'package:kita_warga_apps/model/warga_request.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ class WargaRepository {
   static String mainUrl = "http://34.101.89.42:3000";
   final Dio _dio = Dio();
   var addWargaUrl = '$mainUrl/api/admin/insert/warga';
+  var getListWargaUrl = '$mainUrl/api/admin/list/warga';
 
   Future<GeneralResponsePost> addWarga(WargaRequest wargaRequest) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,4 +43,23 @@ class WargaRepository {
       return GeneralResponsePost.withError("$error");
     }
   }
+
+  Future<ListWargaResponse> getListWarga() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var params =  {
+      "id_perumahan": prefs.get(AppConstant.idPerumahan),
+    };
+    try {
+      Response response = await _dio.post(getListWargaUrl,
+          data: jsonEncode(params),
+          options: Options(
+              headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
+      return ListWargaResponse.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return ListWargaResponse.withError("$error");
+    }
+  }
+
+
 }

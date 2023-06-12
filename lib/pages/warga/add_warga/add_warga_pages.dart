@@ -1,7 +1,9 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
+import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
 import 'package:kita_warga_apps/bloc/warga_bloc.dart';
 import 'package:kita_warga_apps/components/checkbox_component.dart';
 import 'package:kita_warga_apps/components/dropdown_component.dart';
@@ -30,7 +32,16 @@ class _AddWargaPagesState extends State<AddWargaPages> {
     'Laki-Laki',
     'Perempuan'
   ];
+  static const List<String> listKawin = <String>[
+    'Pilih Salah Satu',
+    'Nikah',
+    'Lajang',
+    'Duda',
+    'Janda'
+  ];
   String dropdownValue = list.first;
+  String dropdownValueKawin = listKawin.first;
+
   bool checkValueRT = false;
   bool checkValueRW = false;
   bool is_rw = false, is_rt = false;
@@ -90,12 +101,17 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                         nama_warga = value;
                       });
                     }),
-                TextInputBorderBottom(
-                    labelText: "Status Perkawinan",
-                    hintText: "Masukkan status perkawinan",
+                dropdownCustom(
+                    textHint: "Status Perkawinan",
+                    title: "Pilih salah status perkawinan",
                     onChanged: (value) {
-                      status_pernikahan = value;
-                    }),
+                      setState(() {
+                        dropdownValueKawin = value!;
+                        status_pernikahan = value;
+                      });
+                    },
+                    dropdownValue: dropdownValueKawin,
+                    list: listKawin),
                 dropdownCustom(
                     textHint: "Jenis Kelamin",
                     title: "Pilih Jenis Kelamin",
@@ -225,7 +241,52 @@ class _AddWargaPagesState extends State<AddWargaPages> {
     ));
   }
 
-  void _postData(context) {
+
+  void Snack(String text){
+    final snackBar = SnackBar(
+      content: Text(text, style: regularTextStyle.copyWith(fontSize: 16.sp,color: Colors.white)),
+      backgroundColor: Colors.red,
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    return;
+  }
+
+  void _postData(context) async {
+    BlockPreference blockPreference = BlockPreference();
+    await blockPreference.getDataAccount();
+
+    if(nama_warga.isEmpty){
+      return Snack("Nama Warga tidak boleh kosong.");
+    }
+    if(blok_rumah.isEmpty){
+      return Snack("Blok Rumah tidak boleh kosong.");
+    }
+    if(nomor_rumah.isEmpty){
+      return Snack("Nomor Rumah tidak boleh kosong.");
+    }
+    if(!EmailValidator.validate(email)){
+      return Snack("Email tidak sesuai.");
+    }
+    if(nomor_hp.isEmpty){
+      return Snack("Nomor HP tidak boleh kosong.");
+    }
+    if(status_pernikahan.isEmpty){
+      return Snack("Status Pernikahan tidak boleh kosong.");
+    }
+    if(jenis_kelamin.isEmpty){
+      return Snack("Jenis Kelamin tidak boleh kosong.");
+    }
+    if(id_rw.isEmpty){
+      return Snack("RT tidak boleh kosong.");
+    }
+    if(id_rt.isEmpty){
+      return Snack("RT tidak boleh kosong.");
+    }
+
+
     BlocProvider.of<WargaBloc>(context).add(
       WargaRequest(
           uuid.v1(),
@@ -238,7 +299,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
           is_rt,
           id_rw,
           id_rt,
-          uuid.v1(),
+          blockPreference.idPerumahan ?? "",
           status_pernikahan,
           jenis_kelamin),
     );

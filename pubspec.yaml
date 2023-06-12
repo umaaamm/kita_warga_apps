@@ -55,6 +55,7 @@ dependencies:
   flutter_screenutil: ^5.8.4
   equatable: ^2.0.5
   uuid: ^3.0.7
+  email_validator: ^2.1.17
 
 dev_dependencies:
   flutter_test:

@@ -7,5 +7,8 @@ const kPrimaryLightColor = Color(0xFFF1E6FF);
 class AppConstant {
   static const String accessToken = 'accessToken';
   static const String isLogin = 'is_login';
+  static const String idPerumahan = 'idPerumahan';
+  static const String idWarga = 'idWarga';
+  static const String idPengurus = 'idPengurus';
 
 }

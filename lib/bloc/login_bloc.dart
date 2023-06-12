@@ -38,7 +38,10 @@ class LoginBlocServices extends Bloc<LoginRequest, AppServicesState> {
 
   void saveSession(LoginResponse loginResponse) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString("accessToken", loginResponse.login.accessToken);
+    await pref.setString(AppConstant.accessToken, loginResponse.login.accessToken);
+    await pref.setString(AppConstant.idPengurus, loginResponse.login.id_pengurus);
+    await pref.setString(AppConstant.idPerumahan, loginResponse.login.id_perumahan);
+    await pref.setString(AppConstant.idWarga, loginResponse.login.id_warga);
     await pref.setBool("is_login", true);
   }
 }

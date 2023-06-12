@@ -2,29 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
+import 'package:kita_warga_apps/bloc/get_list_warga.dart';
 import 'package:kita_warga_apps/model/dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/model/list_warga.dart';
+import 'package:kita_warga_apps/model/list_warga_response.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 import 'package:kita_warga_apps/utils/text_format.dart';
 
-class ListWarga extends StatefulWidget {
+class ListWargaWidget extends StatefulWidget {
   @override
-  _ListWargaState createState() => _ListWargaState();
+  _ListWargaWidgetState createState() => _ListWargaWidgetState();
 }
 
-class _ListWargaState extends State<ListWarga> {
+class _ListWargaWidgetState extends State<ListWargaWidget> {
   @override
   void initState() {
     super.initState();
-    dashboardLastTrxBloc..getDashboardLastTrx();
+    getListWargaBloc..getListWarga();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DashboardLastTrxResponse>(
-      stream: dashboardLastTrxBloc.subject.stream,
-      builder: (context, AsyncSnapshot<DashboardLastTrxResponse> snapshot) {
+    return StreamBuilder<ListWargaResponse>(
+      stream: getListWargaBloc.subject.stream,
+      builder: (context, AsyncSnapshot<ListWargaResponse> snapshot) {
         if (!snapshot.hasData) {
           return _buildLoadingWidget();
         }
@@ -71,8 +74,8 @@ class _ListWargaState extends State<ListWarga> {
     ));
   }
 
-  Widget _resultWidget(DashboardLastTrxResponse data) {
-    List<DashboardLastTrx>? lastTrx = data.dashboardLastTrx;
+  Widget _resultWidget(ListWargaResponse data) {
+    List<ListWarga> listWarga = data.listWarga;
     return Column(
       children: [
         Container(
@@ -90,14 +93,14 @@ class _ListWargaState extends State<ListWarga> {
           child: Container(
             child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: data.dashboardLastTrx.length,
+              itemCount: data.listWarga.length,
               itemBuilder: (context, index) {
                 return Container(
                   padding: EdgeInsets.symmetric(vertical: 10.h),
                   margin: EdgeInsets.only(
                       left: 10.w,
                       right: 10.w,
-                      bottom: index == lastTrx.length - 1 ? 75.h : 8.h),
+                      bottom: index == listWarga.length - 1 ? 75.h : 8.h),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r)),
@@ -117,7 +120,7 @@ class _ListWargaState extends State<ListWarga> {
                                 child: Center(
                                   child: Text(
                                     TextFormat.getInitials(
-                                        lastTrx[index].nama as String),
+                                        listWarga[index].nama_warga as String),
                                     style: blackTextStyle.copyWith(
                                         color: whiteColor, fontSize: 45.sp),
                                   ),
@@ -130,23 +133,21 @@ class _ListWargaState extends State<ListWarga> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                lastTrx[index].nama,
+                                listWarga[index].nama_warga,
                                 style: regularTextStyle.copyWith(
                                     fontSize: 21,
                                     color: blueColor,
                                     fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                CurrencyFormat.convertToIdr(
-                                    int.parse(lastTrx[index].balance), 0),
+                                listWarga[index].nomor_hp,
                                 style: regularTextStyle.copyWith(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w700,
                                     color: blueColor),
                               ),
                               Text(
-                                CurrencyFormat.convertDateEpoch(
-                                    int.parse(lastTrx[index].tanggal)),
+                                listWarga[index].email,
                                 style: regularTextStyle.copyWith(
                                     fontSize: 12, color: blueColor),
                               ),
@@ -158,12 +159,7 @@ class _ListWargaState extends State<ListWarga> {
                       Container(
                         margin: EdgeInsets.only(right: 20.w),
                         child: Icon(
-                          int.parse(lastTrx[index].keterangan) == 1
-                              ? Icons.arrow_circle_down
-                              : Icons.arrow_circle_up,
-                          color: int.parse(lastTrx[index].keterangan) == 1
-                              ? Colors.red
-                              : Colors.green,
+                          Icons.supervised_user_circle,
                           size: 30.sp,
                         ),
                       )
