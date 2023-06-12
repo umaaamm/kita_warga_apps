@@ -94,7 +94,7 @@ class _HomePagesState extends State<HomePages> {
               alignment: Alignment.bottomCenter,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  padding: EdgeInsets.symmetric(horizontal: 25.r),
                   child: Column(
                     children: [
                       TotalBalance(data.dashboard.total_saldo),
@@ -107,19 +107,19 @@ class _HomePagesState extends State<HomePages> {
                               color: blueColor,
                               fontWeight: FontWeight.w700)),
                       SizedBox(
-                        height: 15.h,
+                        height: 10.h,
                       ),
                       SummaryHome(
                         DashboardResponse(data.dashboard, data.error),
                       ),
                       SizedBox(
-                        height: 15.h,
+                        height: 10.h,
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  height: 450.h,
+                  height: ScreenUtil().setHeight(400),
                   decoration: BoxDecoration(
                     color: lightBackground,
                     borderRadius: BorderRadius.only(

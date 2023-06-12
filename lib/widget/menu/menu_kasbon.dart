@@ -30,7 +30,7 @@ class menuKasbon extends StatelessWidget {
               size: 30.sp,
             ),
             SizedBox(
-              height: 12.h,
+              height: 5.h,
             ),
             Text(
               'Kas Bon',

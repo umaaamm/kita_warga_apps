@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
-import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/provider/login_provider.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:provider/provider.dart';

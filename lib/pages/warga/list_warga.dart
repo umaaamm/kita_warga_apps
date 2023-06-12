@@ -109,8 +109,7 @@ class _ListWargaState extends State<ListWarga> {
                           ),
                           child: Center(
                             child: Container(
-                                height: 60.h,
-                                width: 60.h,
+                                width: ScreenUtil().setWidth(70),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.r),
                                   color: blueColor,
@@ -133,7 +132,9 @@ class _ListWargaState extends State<ListWarga> {
                               Text(
                                 lastTrx[index].nama,
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 21, color: blueColor, fontWeight: FontWeight.w700),
+                                    fontSize: 21,
+                                    color: blueColor,
+                                    fontWeight: FontWeight.w700),
                               ),
                               Text(
                                 CurrencyFormat.convertToIdr(

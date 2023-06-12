@@ -30,7 +30,7 @@ class menuWarga extends StatelessWidget {
               size: 30.sp,
             ),
             SizedBox(
-              height: 12.sp,
+              height: 5.h,
             ),
             Text(
               'Warga',

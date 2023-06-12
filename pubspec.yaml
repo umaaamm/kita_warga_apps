@@ -79,6 +79,8 @@ flutter:
   assets:
      - assets/dummy/
      - assets/images/
+     - assets/images/Chart/pemasukan/
+     - assets/images/Chart/pengeluaran/
      - assets/icons/
   #   - images/a_dot_ham.jpeg
 

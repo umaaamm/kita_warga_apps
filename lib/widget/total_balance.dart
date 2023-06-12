@@ -13,13 +13,13 @@ class TotalBalance extends StatelessWidget {
       children: [
         Center(
           child: Container(
-            height: 50.h,
+            height: ScreenUtil().setHeight(55),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Total Saldo',
+                  'Total Saldo (Pemasukan - Pengeluaran)',
                   style: regularTextStyle.copyWith(
                       fontSize: 12.sp, color: blueColor),
                 ),
@@ -39,8 +39,8 @@ class TotalBalance extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: Image.asset(
             "assets/dummy/profile_picture.png",
-            width: 50.w,
-            height: 50.w,
+            width: ScreenUtil().setWidth(50),
+            height: ScreenUtil().setHeight(50),
           ),
         )
       ],

@@ -116,11 +116,11 @@ class _LastTransactionState extends State<LastTransaction> {
         Container(
           alignment: Alignment.centerLeft,
           margin:
-              EdgeInsets.only(top: 30.h, left: 15.w, right: 15.w, bottom: 20.h),
+              EdgeInsets.only(top: 30.h, left: 15.w, right: 15.w, bottom: 20),
           child: Text(
             'Transaksi Terakhir',
             style: blackTextStyle.copyWith(
-              fontSize: 16,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -136,20 +136,21 @@ class _LastTransactionState extends State<LastTransaction> {
                   margin: EdgeInsets.only(
                       left: 10.w,
                       right: 10.w,
-                      bottom: index == lastTrx.length - 1 ? 75.h : 8.h),
+                      bottom: index == lastTrx.length - 1
+                          ? ScreenUtil().setHeight(100)
+                          : ScreenUtil().setHeight(8)),
                   decoration: BoxDecoration(
                       color: blueColor,
-                      borderRadius: BorderRadius.circular(20.r)),
+                      borderRadius: BorderRadius.circular(15.r)),
                   child: Row(
                     children: [
                       Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 12,
+                            horizontal: 12.r,
                           ),
                           child: Center(
                             child: Container(
-                                height: 60.h,
-                                width: 60.h,
+                                width: ScreenUtil().setWidth(70),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.r),
                                   color: whiteColor30,
@@ -157,7 +158,7 @@ class _LastTransactionState extends State<LastTransaction> {
                                 child: Center(
                                   child: Text(
                                     TextFormat.getInitials(
-                                        lastTrx[index].nama as String),
+                                        lastTrx[index].nama.toString()),
                                     style: blackTextStyle.copyWith(
                                         color: whiteColor, fontSize: 45.sp),
                                   ),
@@ -172,13 +173,13 @@ class _LastTransactionState extends State<LastTransaction> {
                               Text(
                                 lastTrx[index].nama,
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 14, color: yellowColor),
+                                    fontSize: 14.sp, color: yellowColor),
                               ),
                               Text(
                                 CurrencyFormat.convertToIdr(
                                     int.parse(lastTrx[index].balance), 0),
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 17,
+                                    fontSize: 17.sp,
                                     fontWeight: FontWeight.w700,
                                     color: yellowColor),
                               ),
@@ -186,7 +187,7 @@ class _LastTransactionState extends State<LastTransaction> {
                                 CurrencyFormat.convertDateEpoch(
                                     int.parse(lastTrx[index].tanggal)),
                                 style: regularTextStyle.copyWith(
-                                    fontSize: 12, color: yellowColor),
+                                    fontSize: 12.sp, color: yellowColor),
                               ),
                             ],
                           ),

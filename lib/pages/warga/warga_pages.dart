@@ -48,7 +48,7 @@ class _WargaPagesState extends State<WargaPages> {
           children: [
             title_warga(),
             SizedBox(
-              height: 10,
+              height: ScreenUtil().setHeight(10),
             ),
             ListShorting(
                 dataTest: dataTest,
@@ -65,7 +65,7 @@ class _WargaPagesState extends State<WargaPages> {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: ScreenUtil().setHeight(10),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.635,
