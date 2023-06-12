@@ -11,6 +11,6 @@ class LoginResponse {
         error = "";
 
   LoginResponse.withError(String errorValue)
-      : login = Login(0, "", "", "", ""),
+      : login = Login("", "", 0, ""),
         error = errorValue;
 }

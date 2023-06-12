@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/theme.dart';
 
 import '../utils/constant.dart';
@@ -35,7 +36,8 @@ class RoundedButton extends StatelessWidget {
     return ElevatedButton(
       child: Text(
         text,
-        style: TextStyle(color: textColor),
+        style: regularTextStyle.copyWith(
+            fontSize: 16.sp, color: textColor),
       ),
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
