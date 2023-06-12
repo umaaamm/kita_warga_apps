@@ -43,6 +43,8 @@ class _WargaPagesState extends State<WargaPages> {
       body: SafeArea(
         bottom: false,
         child: ListView(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
           children: [
             title_warga(),
             SizedBox(
@@ -51,10 +53,10 @@ class _WargaPagesState extends State<WargaPages> {
             ListShorting(
                 dataTest: dataTest,
                 onPressed: () {
-                 print("hahaha");
+                  print("hahaha");
                 },
                 isTapped: isTapped,
-              isActive: 0),
+                isActive: 0),
             Padding(
               padding: EdgeInsets.only(right: 20, left: 20),
               child: RoundedInputSearch(
@@ -66,7 +68,7 @@ class _WargaPagesState extends State<WargaPages> {
               height: 10,
             ),
             Container(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height * 0.635,
               decoration: BoxDecoration(
                 color: greyColorLight,
                 borderRadius: BorderRadius.only(

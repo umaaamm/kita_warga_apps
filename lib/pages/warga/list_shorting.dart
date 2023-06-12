@@ -38,21 +38,23 @@ class _ListShortingState extends State<ListShorting> {
                 widget.isActive = index;
               });
             },
-            child: Container(
-            padding: EdgeInsets.only(left: 20),
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.r),
-                color: widget.isActive == index ? blueColor: greyColorLight,
+            child: Center(
+              child: Container(
+              padding: EdgeInsets.only(left: 20),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.r),
+                  color: widget.isActive == index ? blueColor: greyColorLight,
+                ),
+                child: Text(
+                  widget.dataTest[index],
+                  style: regularTextStyle.copyWith(
+                      fontSize: 17.sp, color: widget.isActive == index ? Colors.white : blueColor),
+                ),
               ),
-              child: Text(
-                widget.dataTest[index],
-                style: regularTextStyle.copyWith(
-                    fontSize: 17.sp, color: widget.isActive == index ? Colors.white : blueColor),
-              ),
-            ),
           ),
+            ),
           );
         },
       ),
