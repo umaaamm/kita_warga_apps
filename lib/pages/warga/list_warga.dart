@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/dashboard/get_dashboard_last_trx.dart';
 import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
 import 'package:kita_warga_apps/bloc/warga/warga_bloc_delete.dart';
 import 'package:kita_warga_apps/components/alert_logout.dart';
+import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
+import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
+import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 import 'package:kita_warga_apps/utils/text_format.dart';
 
@@ -74,6 +79,117 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
     ));
   }
 
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackAndHit(
+      BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('A SnackBar has been shown.'),
+      ),
+    );
+  }
+
+  Future<void> showBottom(BuildContext context, ListWarga listWarga) {
+    return showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return RepositoryProvider(
+          create: (context) => WargaRepository(),
+          child: BlocProvider(
+            create: (context) => WargaBlocDelete(
+                wargaRepository:
+                    RepositoryProvider.of<WargaRepository>(context)),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 30, bottom: 30),
+                        child: Text(
+                          "Apakah anda yakin ingin menghapus data " +
+                              listWarga.nama_warga +
+                              "?",
+                          style: regularTextStyle.copyWith(
+                              fontSize: 19, color: blueColor),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: BlocListener<WargaBlocDelete, AppServicesState>(
+                        listener: (context, state) {
+                          if (state is successServices) {
+                            return WidgetsBinding.instance.addPostFrameCallback(
+                                (_) => _reloadData(context));
+                          }
+                        },
+                        child: BlocBuilder<WargaBlocDelete, AppServicesState>(
+                          builder: (context, state) {
+                            print(state);
+                            if (state is loadingServices) {
+                              return _buildLoadingWidget();
+                            } else if (state is errorServices) {
+                              return const Center(
+                                  child: Text("Gagal Menghapus Data"));
+                            }
+                            return Column(
+                              children: [
+                                RoundedButton(
+                                  text: "Hapus",
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    BlocProvider.of<WargaBlocDelete>(context)
+                                        .add(
+                                      WargaDeleteRequest(listWarga.id_warga),
+                                    );
+                                  },
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 30),
+                                  child: RoundedButton(
+                                    text: "Batal",
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _reloadData(BuildContext context) {
+    Navigator.pop(context);
+    getListWargaBloc..getListWarga();
+    const snackBar = SnackBar(
+      backgroundColor: blueColorConstant,
+      behavior: SnackBarBehavior.floating,
+      content: Text(
+        'Data berhasil dihapus.',
+        style: TextStyle(color: Colors.white, fontSize: 17),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Widget _buildErrorWidget(String error) {
     return Center(
         child: Column(
@@ -115,10 +231,8 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                     child: Dismissible(
                       direction: DismissDirection.endToStart,
                       key: Key(item.id_warga),
-                      onDismissed: (direction) {
-                        print(direction);
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text("dismissed")));
+                      confirmDismiss: (direction) async {
+                        showBottom(context, listWarga[index]);
                       },
                       background: Padding(
                         padding: EdgeInsets.only(right: 10.h, left: 10.h),
