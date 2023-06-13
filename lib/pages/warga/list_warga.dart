@@ -13,6 +13,8 @@ import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
 import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
+import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
+import 'package:kita_warga_apps/pages/warga/detail_warga/detail_warga.dart';
 import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
@@ -26,7 +28,6 @@ class ListWargaWidget extends StatefulWidget {
 }
 
 class _ListWargaWidgetState extends State<ListWargaWidget> {
-
   bool isRefresh = false;
   @override
   void initState() {
@@ -42,7 +43,6 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
     return StreamBuilder<ListWargaResponse>(
       stream: getListWargaBloc.subject.stream,
       builder: (context, AsyncSnapshot<ListWargaResponse> snapshot) {
-
         if (!snapshot.hasData) {
           return _buildLoadingWidget();
         }
@@ -60,7 +60,8 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
             return AlertLogout();
           }
           return _buildErrorWidget(list.error.toString());
-        };
+        }
+        ;
 
         return _resultWidget(list);
       },
@@ -193,29 +194,33 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            isRefresh ? _buildLoadingWidget() : Container(
-              alignment: Alignment.center,
-              child: IconButton(
-                icon: Icon(
-                  Icons.refresh ,
-                ),
-                iconSize: 50,
-                color: blueColor,
-                splashColor: blueColor,
-                onPressed: () {
-                  setState(() {
-                    isRefresh = true;
-                  });
-                  getListWargaBloc..getListWarga();
-                },
-              ),
-            ),
+            isRefresh
+                ? _buildLoadingWidget()
+                : Container(
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.refresh,
+                      ),
+                      iconSize: 50,
+                      color: blueColor,
+                      splashColor: blueColor,
+                      onPressed: () {
+                        setState(() {
+                          isRefresh = true;
+                        });
+                        getListWargaBloc..getListWarga();
+                      },
+                    ),
+                  ),
             Text(
-              isRefresh ? "Sedang Mengambil Data" : "Tekan Icon untuk mengulagi",
+              isRefresh
+                  ? "Sedang Mengambil Data"
+                  : "Tekan Icon untuk mengulagi",
               style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
             ),
             Text(
-              isRefresh ? "" :"Ops!, Terjadi kesalahan.",
+              isRefresh ? "" : "Ops!, Terjadi kesalahan.",
               style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
             ),
           ],
@@ -281,78 +286,92 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                           ),
                         ),
                       ),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        margin: EdgeInsets.only(
-                            left: 10.w,
-                            right: 10.w,
-                            bottom: index == listWarga.length - 1 ? 75.h : 8.h),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20.r)),
-                        child: Row(
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                child: Center(
-                                  child: Container(
-                                      width: ScreenUtil().setWidth(70),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10.r),
-                                        color: blueColor,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          TextFormat.getInitials(
-                                              listWarga[index].nama_warga
-                                                  as String),
-                                          style: blackTextStyle.copyWith(
-                                              color: whiteColor,
-                                              fontSize: 45.sp),
-                                        ),
-                                      )),
-                                )),
-                            Center(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      listWarga[index].nama_warga,
-                                      style: regularTextStyle.copyWith(
-                                          fontSize: 21,
-                                          color: blueColor,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    Text(
-                                      listWarga[index].nomor_hp,
-                                      style: regularTextStyle.copyWith(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w700,
-                                          color: blueColor),
-                                    ),
-                                    Text(
-                                      listWarga[index].email,
-                                      style: regularTextStyle.copyWith(
-                                          fontSize: 12, color: blueColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return DetailWarga(listWarga: listWarga[index]);
+                              },
                             ),
-                            Spacer(),
-                            Container(
-                              margin: EdgeInsets.only(right: 20.w),
-                              child: Icon(
-                                Icons.supervised_user_circle,
-                                size: 30.sp,
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          margin: EdgeInsets.only(
+                              left: 10.w,
+                              right: 10.w,
+                              bottom:
+                                  index == listWarga.length - 1 ? 75.h : 8.h),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.r)),
+                          child: Row(
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                        width: ScreenUtil().setWidth(70),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                          color: blueColor,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            TextFormat.getInitials(
+                                                listWarga[index].nama_warga
+                                                    as String),
+                                            style: blackTextStyle.copyWith(
+                                                color: whiteColor,
+                                                fontSize: 45.sp),
+                                          ),
+                                        )),
+                                  )),
+                              Center(
+                                child: Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        listWarga[index].nama_warga,
+                                        style: regularTextStyle.copyWith(
+                                            fontSize: 21,
+                                            color: blueColor,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(
+                                        listWarga[index].nomor_hp,
+                                        style: regularTextStyle.copyWith(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w700,
+                                            color: blueColor),
+                                      ),
+                                      Text(
+                                        listWarga[index].email,
+                                        style: regularTextStyle.copyWith(
+                                            fontSize: 12, color: blueColor),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            )
-                          ],
+                              Spacer(),
+                              Container(
+                                margin: EdgeInsets.only(right: 20.w),
+                                child: Icon(
+                                  Icons.supervised_user_circle,
+                                  size: 30.sp,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
