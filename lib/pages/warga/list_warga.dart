@@ -53,9 +53,10 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
           if (list.isExpired.isExpired) {
             return AlertLogout();
           }
+
+          print(list.isExpired.isExpired);
           return _buildErrorWidget(list.error.toString());
-        }
-        ;
+        };
 
         return _resultWidget(list);
       },

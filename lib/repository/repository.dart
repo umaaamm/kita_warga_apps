@@ -17,12 +17,18 @@ class DashboardRepository {
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
 
-      if(response.statusCode == 401){
+      if (response.statusCode == 401) {
         return DashboardResponse.with401(AppConstant.msgIxpired);
       }
 
       return DashboardResponse.fromJson(response.data);
     } catch (error, stacktrace) {
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          return DashboardResponse.with401(AppConstant.msgIxpired);
+        }
+      }
+
       print("Exception occured: $error stackTrace: $stacktrace");
       return DashboardResponse.withError("$error");
     }
@@ -36,13 +42,14 @@ class DashboardRepository {
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
 
-      if(response.statusCode == 401){
-        return DashboardLastTrxResponse.with401(AppConstant.msgIxpired);
-      }
-
-
       return DashboardLastTrxResponse.fromJson(response.data);
     } catch (error, stacktrace) {
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          return DashboardLastTrxResponse.with401(AppConstant.msgIxpired);
+        }
+      }
+
       print("Exception occured: $error stackTrace: $stacktrace");
       return DashboardLastTrxResponse.withError("$error");
     }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/pages/login/login.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 
@@ -35,15 +37,32 @@ class TotalBalance extends StatelessWidget {
           ),
         ),
         Spacer(),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.asset(
-            "assets/dummy/profile_picture.png",
-            width: ScreenUtil().setWidth(50),
-            height: ScreenUtil().setHeight(50),
+        GestureDetector(
+          onDoubleTap: () {
+            _logout(context);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              "assets/dummy/profile_picture.png",
+              width: ScreenUtil().setWidth(50),
+              height: ScreenUtil().setHeight(50),
+            ),
           ),
         )
+
       ],
+    );
+  }
+  Future<void> _logout(BuildContext context) async {
+    BlockPreference provider = BlockPreference();
+    await provider.logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return LoginPages();
+      }),
+          (Route<dynamic> route) => false,
     );
   }
 }

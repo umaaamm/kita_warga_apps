@@ -39,13 +39,13 @@ class WargaRepository {
           data: jsonEncode(params),
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
-
-      if (response.statusCode == 401) {
-        return GeneralResponsePost.with401(AppConstant.msgIxpired);
-      }
-
       return GeneralResponsePost.fromJson(response.data);
     } catch (error, stacktrace) {
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          return GeneralResponsePost.with401(AppConstant.msgIxpired);
+        }
+      }
       print("Exception occured: $error stackTrace: $stacktrace");
       return GeneralResponsePost.withError("$error");
     }
@@ -62,12 +62,13 @@ class WargaRepository {
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
 
-      if (response.statusCode == 401) {
-        return ListWargaResponse.with401(AppConstant.msgIxpired);
-      }
-
       return ListWargaResponse.fromJson(response.data);
     } catch (error, stacktrace) {
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          return ListWargaResponse.with401(AppConstant.msgIxpired);
+        }
+      }
       print("Exception occured: $error stackTrace: $stacktrace");
       return ListWargaResponse.withError("$error");
     }
@@ -91,6 +92,11 @@ class WargaRepository {
 
       return GeneralResponsePost.fromJson(response.data);
     } catch (error, stacktrace) {
+      if (error is DioError) {
+        if (error.response?.statusCode == 401) {
+          return GeneralResponsePost.with401(AppConstant.msgIxpired);
+        }
+      }
       print("Exception occured: $error stackTrace: $stacktrace");
       return GeneralResponsePost.withError("$error");
     }
