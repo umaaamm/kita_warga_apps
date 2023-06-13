@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kita_warga_apps/model/dashboard_response.dart';
+import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/components/alert_logout.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_response.dart';
+import 'package:kita_warga_apps/pages/login/login.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:kita_warga_apps/widget/floating_footer.dart';
 import 'package:kita_warga_apps/widget/last_transaction.dart';
 import 'package:kita_warga_apps/widget/summary_home.dart';
 import 'package:kita_warga_apps/widget/total_balance.dart';
 
-import '../bloc/get_dashboard.dart';
+import '../bloc/dashboard/get_dashboard.dart';
 
 class HomePages extends StatefulWidget {
   @override
@@ -37,11 +41,17 @@ class _HomePagesState extends State<HomePages> {
         }
 
         if (snapshot.hasError) {
+          if (snapshot.data!.responseExpired.isExpired) {
+            return AlertLogout();
+          }
           return _buildErrorWidget(snapshot.error.toString());
         }
 
         final list = snapshot.data!;
         if (list.error != null && list.error!.isNotEmpty) {
+          if (snapshot.data!.responseExpired.isExpired) {
+            return AlertLogout();
+          }
           return _buildErrorWidget(list.error.toString());
         }
         return _resultWidget(list);
@@ -104,7 +114,8 @@ class _HomePagesState extends State<HomePages> {
                         height: 10.h,
                       ),
                       SummaryHome(
-                        DashboardResponse(data.dashboard, data.error),
+                        DashboardResponse(
+                            data.dashboard, data.error, data.responseExpired),
                       ),
                       SizedBox(
                         height: 10.h,
@@ -133,3 +144,5 @@ class _HomePagesState extends State<HomePages> {
     );
   }
 }
+
+

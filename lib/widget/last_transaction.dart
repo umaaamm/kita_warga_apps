@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/bloc/dashboard/get_dashboard_last_trx.dart';
+import 'package:kita_warga_apps/components/alert_logout.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
 import 'package:kita_warga_apps/pages/kas_bon/kas_bon_pages.dart';
 import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
@@ -35,11 +36,17 @@ class _LastTransactionState extends State<LastTransaction> {
         }
 
         if (snapshot.hasError) {
+          if (snapshot.data!.responsExpired.isExpired) {
+            return AlertLogout();
+          }
           return _buildErrorWidget(snapshot.error.toString());
         }
 
         final list = snapshot.data!;
         if (list.error != null && list.error!.isNotEmpty) {
+          if (list.responsExpired.isExpired) {
+            return AlertLogout();
+          }
           return _buildErrorWidget(list.error.toString());
         }
         ;

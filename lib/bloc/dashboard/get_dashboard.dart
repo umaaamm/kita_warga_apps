@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:kita_warga_apps/model/dashboard_response.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_response.dart';
 import 'package:kita_warga_apps/repository/repository.dart';
 import 'package:rxdart/rxdart.dart';
 

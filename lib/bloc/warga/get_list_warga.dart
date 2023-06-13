@@ -1,4 +1,4 @@
-import 'package:kita_warga_apps/model/list_warga_response.dart';
+import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:rxdart/rxdart.dart';
 

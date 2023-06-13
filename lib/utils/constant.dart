@@ -10,5 +10,6 @@ class AppConstant {
   static const String idPerumahan = 'idPerumahan';
   static const String idWarga = 'idWarga';
   static const String idPengurus = 'idPengurus';
-
+  static const String isExpired = 'isExpired';
+  static const String msgIxpired = 'Sesi Berakhir, Silahkan Login Ulang.';
 }

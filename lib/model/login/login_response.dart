@@ -1,4 +1,4 @@
-import 'package:kita_warga_apps/model/login.dart';
+import 'package:kita_warga_apps/model/login/login.dart';
 
 class LoginResponse {
   final Login login;

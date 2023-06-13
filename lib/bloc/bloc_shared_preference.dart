@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
-import 'package:kita_warga_apps/model/login_request.dart';
-import 'package:kita_warga_apps/model/login_response.dart';
+import 'package:kita_warga_apps/model/login/login_request.dart';
+import 'package:kita_warga_apps/model/login/login_response.dart';
 import 'package:kita_warga_apps/repository/login_repository.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:provider/provider.dart';

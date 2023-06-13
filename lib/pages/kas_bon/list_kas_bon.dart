@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kita_warga_apps/bloc/get_dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/bloc/dashboard/get_dashboard_last_trx.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 import 'package:kita_warga_apps/utils/text_format.dart';

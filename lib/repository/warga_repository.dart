@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
-import 'package:kita_warga_apps/model/list_warga_response.dart';
-import 'package:kita_warga_apps/model/warga_request.dart';
+import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
+import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
+import 'package:kita_warga_apps/model/warga/warga_request.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ class WargaRepository {
   final Dio _dio = Dio();
   var addWargaUrl = '$mainUrl/api/admin/insert/warga';
   var getListWargaUrl = '$mainUrl/api/admin/list/warga';
+  var deleteWargaUrl = '$mainUrl/api/admin/delete/warga';
 
   Future<GeneralResponsePost> addWarga(WargaRequest wargaRequest) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -37,6 +39,11 @@ class WargaRepository {
           data: jsonEncode(params),
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
+
+      if (response.statusCode == 401) {
+        return GeneralResponsePost.with401(AppConstant.msgIxpired);
+      }
+
       return GeneralResponsePost.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
@@ -46,7 +53,7 @@ class WargaRepository {
 
   Future<ListWargaResponse> getListWarga() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var params =  {
+    var params = {
       "id_perumahan": prefs.get(AppConstant.idPerumahan),
     };
     try {
@@ -54,6 +61,11 @@ class WargaRepository {
           data: jsonEncode(params),
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
+
+      if (response.statusCode == 401) {
+        return ListWargaResponse.with401(AppConstant.msgIxpired);
+      }
+
       return ListWargaResponse.fromJson(response.data);
     } catch (error, stacktrace) {
       print("Exception occured: $error stackTrace: $stacktrace");
@@ -61,5 +73,26 @@ class WargaRepository {
     }
   }
 
+  Future<GeneralResponsePost> deleteWarga(
+      WargaDeleteRequest wargaDeleteRequest) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var params = {
+      "id_warga": wargaDeleteRequest.id_warga,
+    };
+    try {
+      Response response = await _dio.post(deleteWargaUrl,
+          data: jsonEncode(params),
+          options: Options(
+              headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
 
+      if (response.statusCode == 401) {
+        return GeneralResponsePost.with401(AppConstant.msgIxpired);
+      }
+
+      return GeneralResponsePost.fromJson(response.data);
+    } catch (error, stacktrace) {
+      print("Exception occured: $error stackTrace: $stacktrace");
+      return GeneralResponsePost.withError("$error");
+    }
+  }
 }

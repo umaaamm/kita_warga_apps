@@ -1,4 +1,4 @@
-import 'package:kita_warga_apps/model/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
 import 'package:kita_warga_apps/repository/repository.dart';
 import 'package:rxdart/rxdart.dart';
 

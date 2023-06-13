@@ -1,14 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
-import 'package:kita_warga_apps/model/login_request.dart';
-import 'package:kita_warga_apps/model/login_response.dart';
-import 'package:kita_warga_apps/model/warga_request.dart';
-import 'package:kita_warga_apps/repository/login_repository.dart';
+import 'package:kita_warga_apps/model/warga/warga_request.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
-import 'package:kita_warga_apps/utils/constant.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class WargaBloc extends Bloc<WargaRequest, AppServicesState> {
   final WargaRepository wargaRepository;

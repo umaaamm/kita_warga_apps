@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:kita_warga_apps/model/login_request.dart';
-import 'package:kita_warga_apps/model/login_response.dart';
+import 'package:kita_warga_apps/model/login/login_request.dart';
+import 'package:kita_warga_apps/model/login/login_response.dart';
 
 class LoginRepository {
   static String mainUrl = "http://34.101.89.42:3000";
