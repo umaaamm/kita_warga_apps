@@ -26,10 +26,15 @@ class ListWargaWidget extends StatefulWidget {
 }
 
 class _ListWargaWidgetState extends State<ListWargaWidget> {
+
+  bool isRefresh = false;
   @override
   void initState() {
     super.initState();
     getListWargaBloc..getListWarga();
+    setState(() {
+      isRefresh = false;
+    });
   }
 
   @override
@@ -37,6 +42,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
     return StreamBuilder<ListWargaResponse>(
       stream: getListWargaBloc.subject.stream,
       builder: (context, AsyncSnapshot<ListWargaResponse> snapshot) {
+
         if (!snapshot.hasData) {
           return _buildLoadingWidget();
         }
@@ -53,8 +59,6 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
           if (list.isExpired.isExpired) {
             return AlertLogout();
           }
-
-          print(list.isExpired.isExpired);
           return _buildErrorWidget(list.error.toString());
         };
 
@@ -78,15 +82,6 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
         )
       ],
     ));
-  }
-
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackAndHit(
-      BuildContext context) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('A SnackBar has been shown.'),
-      ),
-    );
   }
 
   Future<void> showBottom(BuildContext context, ListWarga listWarga) {
@@ -193,12 +188,40 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
 
   Widget _buildErrorWidget(String error) {
     return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Error occured: $error"),
-      ],
-    ));
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            isRefresh ? _buildLoadingWidget() : Container(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(
+                  Icons.refresh ,
+                ),
+                iconSize: 50,
+                color: blueColor,
+                splashColor: blueColor,
+                onPressed: () {
+                  setState(() {
+                    isRefresh = true;
+                  });
+                  getListWargaBloc..getListWarga();
+                },
+              ),
+            ),
+            Text(
+              isRefresh ? "Sedang Mengambil Data" : "Tekan Icon untuk mengulagi",
+              style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+            ),
+            Text(
+              isRefresh ? "" :"Ops!, Terjadi kesalahan.",
+              style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _resultWidget(ListWargaResponse data) {
