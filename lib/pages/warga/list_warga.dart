@@ -44,6 +44,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
     return StreamBuilder<ListWargaResponse>(
       stream: getListWargaBloc.subject.stream,
       builder: (context, AsyncSnapshot<ListWargaResponse> snapshot) {
+        print(snapshot);
         if (!snapshot.hasData) {
           return _buildLoadingWidget();
         }
@@ -63,6 +64,10 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
           return _buildErrorWidget(list.error.toString());
         }
         ;
+
+        if (list.listWarga.isEmpty) {
+          return _buildNoDataWidget();
+        }
 
         return _resultWidget(list);
       },
@@ -186,6 +191,39 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Widget _buildNoDataWidget() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(
+                  Icons.supervised_user_circle,
+                ),
+                iconSize: 50,
+                color: blueColor,
+                splashColor: blueColor,
+                onPressed: () {},
+              ),
+            ),
+            Flexible(
+              child: Text(
+                "Data Warga yang anda cari tidak ditemukan.",
+                textAlign:TextAlign.center,
+                style:
+                    regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildErrorWidget(String error) {
