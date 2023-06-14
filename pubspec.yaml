@@ -57,6 +57,13 @@ dependencies:
   uuid: ^3.0.7
   email_validator: ^2.1.17
   share_plus: ^7.0.2
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo-kitawarga.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
 
 dev_dependencies:
   flutter_test:

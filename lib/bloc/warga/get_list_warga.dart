@@ -1,3 +1,4 @@
+import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -7,8 +8,8 @@ class GetListWargaBloc {
   final BehaviorSubject<ListWargaResponse> _subject =
   BehaviorSubject<ListWargaResponse>();
 
-  getListWarga() async {
-    ListWargaResponse response = await _repository.getListWarga();
+  getListWarga(GetListWargaRequest getListWargaRequest) async {
+    ListWargaResponse response = await _repository.getListWarga(getListWargaRequest);
     _subject.sink.add(response);
   }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
+import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
 import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
 import 'package:kita_warga_apps/model/warga/warga_request.dart';
@@ -51,10 +52,12 @@ class WargaRepository {
     }
   }
 
-  Future<ListWargaResponse> getListWarga() async {
+  Future<ListWargaResponse> getListWarga(GetListWargaRequest getListWargaRequest) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var params = {
       "id_perumahan": prefs.get(AppConstant.idPerumahan),
+      "param": getListWargaRequest.param,
+      "nama" : getListWargaRequest.nama
     };
     try {
       Response response = await _dio.post(getListWargaUrl,

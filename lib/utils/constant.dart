@@ -12,4 +12,19 @@ class AppConstant {
   static const String idPengurus = 'idPengurus';
   static const String isExpired = 'isExpired';
   static const String msgIxpired = 'Sesi Berakhir, Silahkan Login Ulang.';
+
+
+  static int valueShorting(String shorting) {
+    switch (shorting) {
+      case 'Semua':
+      case 'Terbaru':
+        return 1;
+      case 'A-z':
+        return 1;
+      case 'Z-a':
+        return 2;
+      default:
+        return 1;
+    }
+  }
 }

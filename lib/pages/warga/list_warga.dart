@@ -10,6 +10,7 @@ import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/list_warga_response.dart';
 import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
@@ -32,7 +33,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
   @override
   void initState() {
     super.initState();
-    getListWargaBloc..getListWarga();
+    getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
     setState(() {
       isRefresh = false;
     });
@@ -175,7 +176,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
 
   _reloadData(BuildContext context) {
     Navigator.pop(context);
-    getListWargaBloc..getListWarga();
+    getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
     const snackBar = SnackBar(
       backgroundColor: blueColorConstant,
       behavior: SnackBarBehavior.floating,
@@ -209,7 +210,8 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                         setState(() {
                           isRefresh = true;
                         });
-                        getListWargaBloc..getListWarga();
+                        getListWargaBloc
+                          ..getListWarga(GetListWargaRequest(1, ""));
                       },
                     ),
                   ),

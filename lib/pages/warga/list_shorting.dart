@@ -31,7 +31,7 @@ class _ListShortingState extends State<ListShorting> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              widget.onPressed();
+              widget.onPressed(index);
               setState(() {
                 widget.isActive = index;
               });
