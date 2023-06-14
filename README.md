@@ -5,6 +5,7 @@ KitaWarga Mobile Apps digunakan untuk mengelola pembayaran perumahan seperti dat
 ### Minimum Requirement
 - [x] App written with flutter 3
 - [x] Use BloC Architecture
+- [x] Use Dio for Handle Service
 - [x] Handling error where there is no internet connection / error from API
 - [x] Readable and clean Readme.md
 
