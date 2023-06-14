@@ -1,16 +1,14 @@
 # KitaWarga Mobile Apps
 
-KitaWarga Mobile Apps
+KitaWarga Mobile Apps digunakan untuk mengelola pembayaran perumahan seperti data pemasukan, data pengeluaran, data warga perumahan, kasbon pengurus serta share show QR.
 
-## Getting Started
+### Minimum Requirement
+- [x] App written with flutter 3
+- [x] Use BloC Architecture
+- [x] Handling error where there is no internet connection / error from API
+- [x] Readable and clean Readme.md
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Run Project
+- Download Source Code or Pull Source Code
+- Open with Visual Studio or Android Studio
+- run Apps
