@@ -1,6 +1,6 @@
-# kita_warga_apps
+# KitaWarga Mobile Apps
 
-KitaWarga Apps
+KitaWarga Mobile Apps
 
 ## Getting Started
 
