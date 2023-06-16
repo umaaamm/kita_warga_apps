@@ -5,9 +5,12 @@ import '../theme.dart';
 import '../utils/constant.dart';
 
 class dropdownCustom extends StatelessWidget {
+  final String? defaultValue;
   final String title;
   final Function(String?) onChanged;
   final String textHint;
+  final TextEditingController? controllerText;
+
   const dropdownCustom({
     super.key,
     required this.textHint,
@@ -15,6 +18,8 @@ class dropdownCustom extends StatelessWidget {
     required this.onChanged,
     required this.dropdownValue,
     required this.list,
+    this.defaultValue,
+    this.controllerText,
   });
 
   final String dropdownValue;

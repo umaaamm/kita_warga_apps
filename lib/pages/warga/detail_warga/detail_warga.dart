@@ -9,6 +9,7 @@ import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
 import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
+import 'package:kita_warga_apps/pages/warga/edit_warga/edit_warga_pages.dart';
 import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
@@ -69,11 +70,14 @@ class _DetailWargaState extends State<DetailWarga> {
                               SizedBox(
                                 height: ScreenUtil().setHeight(5),
                               ),
-                              Text(
-                                "${widget.listWarga.alamat_perumahan} ${widget.listWarga.blok_rumah} ${widget.listWarga.nomor_rumah} ${widget.listWarga.nama_perumahan} djskajdksjkadn jdksjakjdksa jdksajdkjskajd kdjskajdkjsa jdskajkdjs",
-                                style:
-                                    regularTextStyle.copyWith(fontSize: 9.sp),
-                                textAlign: TextAlign.center,
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                child: Text(
+                                  "${widget.listWarga.alamat_perumahan} ${widget.listWarga.blok_rumah} ${widget.listWarga.nomor_rumah} ${widget.listWarga.nama_perumahan}",
+                                  style:
+                                      regularTextStyle.copyWith(fontSize: 9.sp),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                               SizedBox(
                                 height: ScreenUtil().setHeight(20),
@@ -81,18 +85,33 @@ class _DetailWargaState extends State<DetailWarga> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    width: ScreenUtil().setWidth(200),
-                                    decoration: BoxDecoration(
-                                        color: yellowColor,
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    padding: EdgeInsets.symmetric(vertical: 14),
-                                    child: Text(
-                                      'Edit',
-                                      style: regularTextStyle.copyWith(
-                                          fontSize: 12.sp),
-                                      textAlign: TextAlign.center,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return EditWargaPages(
+                                              listWarga: widget.listWarga,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: ScreenUtil().setWidth(200),
+                                      decoration: BoxDecoration(
+                                          color: yellowColor,
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 14),
+                                      child: Text(
+                                        'Rubah',
+                                        style: regularTextStyle.copyWith(
+                                            fontSize: 12.sp),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -112,6 +131,7 @@ class _DetailWargaState extends State<DetailWarga> {
                                       child: Icon(
                                         Icons.delete,
                                         size: 16.sp,
+                                        color: whiteColor,
                                         // Other properties
                                       ),
                                     ),

@@ -6,12 +6,13 @@ class TextInputBorderBottom extends StatelessWidget {
   final String labelText;
   final String hintText;
   final ValueChanged<String> onChanged;
-  const TextInputBorderBottom({
-    super.key,
-    required this.labelText,
-    required this.hintText,
-    required this.onChanged,
-  });
+  final TextEditingController? controllerText;
+  const TextInputBorderBottom(
+      {super.key,
+      required this.labelText,
+      required this.hintText,
+      required this.onChanged,
+      this.controllerText});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +20,13 @@ class TextInputBorderBottom extends StatelessWidget {
       padding: EdgeInsets.only(left: 20, right: 20),
       child: TextField(
         onChanged: onChanged,
-        style: regularTextStyle.copyWith(
-            fontSize: 16.sp),
+        controller: controllerText,
+        style: regularTextStyle.copyWith(fontSize: 16.sp),
         cursorColor: blueColor,
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: regularTextStyle.copyWith(fontSize: 16.sp,color: blueColor),
+          labelStyle:
+              regularTextStyle.copyWith(fontSize: 16.sp, color: blueColor),
           hintText: hintText,
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: greyColorLight, width: 2),
