@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
 import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
-import 'package:kita_warga_apps/components/checkbox_component.dart';
 import 'package:kita_warga_apps/components/dropdown_component.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/components/switch_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/warga_request.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
-import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:uuid/uuid.dart';
@@ -27,6 +27,12 @@ class AddWargaPages extends StatefulWidget {
 }
 
 class _AddWargaPagesState extends State<AddWargaPages> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   static const List<String> list = <String>[
     'Pilih Salah Satu',
     'Laki-Laki',
@@ -61,7 +67,6 @@ class _AddWargaPagesState extends State<AddWargaPages> {
   @override
   Widget build(BuildContext context) {
     GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-
     return RepositoryProvider(
       create: (context) => WargaRepository(),
       child: BlocProvider(
@@ -186,15 +191,7 @@ class _AddWargaPagesState extends State<AddWargaPages> {
                     child: BlocListener<WargaBloc, AppServicesState>(
                       listener: (context, state) {
                         if (state is successServices) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return WargaPages();
-                              },
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
+                          _reloadData(context);
                         }
                       },
                       child: BlocBuilder<WargaBloc, AppServicesState>(
@@ -224,6 +221,20 @@ class _AddWargaPagesState extends State<AddWargaPages> {
     );
   }
 
+  _reloadData(BuildContext context) {
+    Navigator.pop(context);
+    getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
+    const snackBar = SnackBar(
+      backgroundColor: blueColorConstant,
+      behavior: SnackBarBehavior.floating,
+      content: Text(
+        'Data berhasil ditambah.',
+        style: TextStyle(color: Colors.white, fontSize: 17),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Widget _buildLoadingWidget() {
     return Center(
         child: Column(
@@ -241,10 +252,11 @@ class _AddWargaPagesState extends State<AddWargaPages> {
     ));
   }
 
-
-  void Snack(String text){
+  void Snack(String text) {
     final snackBar = SnackBar(
-      content: Text(text, style: regularTextStyle.copyWith(fontSize: 16.sp,color: Colors.white)),
+      content: Text(text,
+          style:
+              regularTextStyle.copyWith(fontSize: 16.sp, color: Colors.white)),
       backgroundColor: Colors.red,
     );
 
@@ -258,34 +270,33 @@ class _AddWargaPagesState extends State<AddWargaPages> {
     BlockPreference blockPreference = BlockPreference();
     await blockPreference.getDataAccount();
 
-    if(nama_warga.isEmpty){
+    if (nama_warga.isEmpty) {
       return Snack("Nama Warga tidak boleh kosong.");
     }
-    if(blok_rumah.isEmpty){
+    if (blok_rumah.isEmpty) {
       return Snack("Blok Rumah tidak boleh kosong.");
     }
-    if(nomor_rumah.isEmpty){
+    if (nomor_rumah.isEmpty) {
       return Snack("Nomor Rumah tidak boleh kosong.");
     }
-    if(!EmailValidator.validate(email)){
+    if (!EmailValidator.validate(email)) {
       return Snack("Email tidak sesuai.");
     }
-    if(nomor_hp.isEmpty){
+    if (nomor_hp.isEmpty) {
       return Snack("Nomor HP tidak boleh kosong.");
     }
-    if(status_pernikahan.isEmpty){
+    if (status_pernikahan.isEmpty) {
       return Snack("Status Pernikahan tidak boleh kosong.");
     }
-    if(jenis_kelamin.isEmpty){
+    if (jenis_kelamin.isEmpty) {
       return Snack("Jenis Kelamin tidak boleh kosong.");
     }
-    if(id_rw.isEmpty){
+    if (id_rw.isEmpty) {
       return Snack("RT tidak boleh kosong.");
     }
-    if(id_rt.isEmpty){
+    if (id_rt.isEmpty) {
       return Snack("RT tidak boleh kosong.");
     }
-
 
     BlocProvider.of<WargaBloc>(context).add(
       WargaRequest(

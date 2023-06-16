@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/dashboard/get_dashboard_last_trx.dart';
 import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
-import 'package:kita_warga_apps/bloc/warga/warga_bloc_delete.dart';
+import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
 import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
@@ -102,7 +102,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
         return RepositoryProvider(
           create: (context) => WargaRepository(),
           child: BlocProvider(
-            create: (context) => WargaBlocDelete(
+            create: (context) => WargaBloc(
                 wargaRepository:
                     RepositoryProvider.of<WargaRepository>(context)),
             child: Container(
@@ -126,14 +126,14 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                       ),
                     ),
                     Container(
-                      child: BlocListener<WargaBlocDelete, AppServicesState>(
+                      child: BlocListener<WargaBloc, AppServicesState>(
                         listener: (context, state) {
                           if (state is successServices) {
                             return WidgetsBinding.instance.addPostFrameCallback(
                                 (_) => _reloadData(context));
                           }
                         },
-                        child: BlocBuilder<WargaBlocDelete, AppServicesState>(
+                        child: BlocBuilder<WargaBloc, AppServicesState>(
                           builder: (context, state) {
                             print(state);
                             if (state is loadingServices) {
@@ -148,7 +148,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                                   text: "Hapus",
                                   color: Colors.red,
                                   onPressed: () {
-                                    BlocProvider.of<WargaBlocDelete>(context)
+                                    BlocProvider.of<WargaBloc>(context)
                                         .add(
                                       WargaDeleteRequest(listWarga.id_warga),
                                     );
@@ -294,7 +294,7 @@ class _ListWargaWidgetState extends State<ListWargaWidget> {
                 return RepositoryProvider(
                   create: (context) => WargaRepository(),
                   child: BlocProvider(
-                    create: (context) => WargaBlocDelete(
+                    create: (context) => WargaBloc(
                         wargaRepository:
                             RepositoryProvider.of<WargaRepository>(context)),
                     child: Dismissible(

@@ -3,14 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
-import 'package:kita_warga_apps/bloc/warga/warga_bloc_delete.dart';
+import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/warga_delete_request.dart';
-import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
 import 'package:kita_warga_apps/pages/warga/edit_warga/edit_warga_pages.dart';
-import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
@@ -107,7 +105,7 @@ class _DetailWargaState extends State<DetailWarga> {
                                       padding:
                                           EdgeInsets.symmetric(vertical: 14),
                                       child: Text(
-                                        'Rubah',
+                                        'Ubah Data',
                                         style: regularTextStyle.copyWith(
                                             fontSize: 12.sp),
                                         textAlign: TextAlign.center,
@@ -394,7 +392,7 @@ class _DetailWargaState extends State<DetailWarga> {
         return RepositoryProvider(
           create: (context) => WargaRepository(),
           child: BlocProvider(
-            create: (context) => WargaBlocDelete(
+            create: (context) => WargaBloc(
                 wargaRepository:
                     RepositoryProvider.of<WargaRepository>(context)),
             child: Container(
@@ -418,20 +416,13 @@ class _DetailWargaState extends State<DetailWarga> {
                       ),
                     ),
                     Container(
-                      child: BlocListener<WargaBlocDelete, AppServicesState>(
+                      child: BlocListener<WargaBloc, AppServicesState>(
                         listener: (context, state) {
                           if (state is successServices) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return WargaPages();
-                                },
-                              ),
-                            );
+                            _reloadData(context);
                           }
                         },
-                        child: BlocBuilder<WargaBlocDelete, AppServicesState>(
+                        child: BlocBuilder<WargaBloc, AppServicesState>(
                           builder: (context, state) {
                             print(state);
                             if (state is loadingServices) {
@@ -446,8 +437,7 @@ class _DetailWargaState extends State<DetailWarga> {
                                   text: "Hapus",
                                   color: Colors.red,
                                   onPressed: () {
-                                    BlocProvider.of<WargaBlocDelete>(context)
-                                        .add(
+                                    BlocProvider.of<WargaBloc>(context).add(
                                       WargaDeleteRequest(listWarga.id_warga),
                                     );
                                   },
@@ -478,7 +468,8 @@ class _DetailWargaState extends State<DetailWarga> {
   }
 
   _reloadData(BuildContext context) {
-    Navigator.pop(context);
+    int count = 0;
+    Navigator.of(context).popUntil((_) => count++ >= 2);
     getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
     const snackBar = SnackBar(
       backgroundColor: blueColorConstant,

@@ -4,17 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
 import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
 import 'package:kita_warga_apps/components/dropdown_component.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/components/switch_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/model/warga/list_warga.dart';
 import 'package:kita_warga_apps/model/warga/warga_request.dart';
+import 'package:kita_warga_apps/model/warga/warga_request_update.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
-import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/repository/warga_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:uuid/uuid.dart';
 
 class EditWargaPages extends StatefulWidget {
@@ -217,15 +220,7 @@ class _EditWargaPagesState extends State<EditWargaPages> {
                     child: BlocListener<WargaBloc, AppServicesState>(
                       listener: (context, state) {
                         if (state is successServices) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return WargaPages();
-                              },
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
+                          _reloadData(context);
                         }
                       },
                       child: BlocBuilder<WargaBloc, AppServicesState>(
@@ -253,6 +248,21 @@ class _EditWargaPagesState extends State<EditWargaPages> {
         ),
       ),
     );
+  }
+
+  _reloadData(BuildContext context) {
+    int count = 0;
+    Navigator.of(context).popUntil((_) => count++ >= 2);
+    getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
+    const snackBar = SnackBar(
+      backgroundColor: blueColorConstant,
+      behavior: SnackBarBehavior.floating,
+      content: Text(
+        'Data berhasil di ubah.',
+        style: TextStyle(color: Colors.white, fontSize: 17),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _buildLoadingWidget() {
@@ -319,20 +329,22 @@ class _EditWargaPagesState extends State<EditWargaPages> {
     }
 
     BlocProvider.of<WargaBloc>(context).add(
-      WargaRequest(
-          uuid.v1(),
-          nama_warga,
-          blok_rumah,
-          nomor_rumah,
-          email,
-          nomor_hp,
-          is_rw,
-          is_rt,
-          id_rw,
-          id_rt,
-          blockPreference.idPerumahan ?? "",
-          status_pernikahan,
-          jenis_kelamin),
+      WargaRequestUpdate(
+        WargaRequest(
+            widget.listWarga.id_warga,
+            _controller.text,
+            _controllerNoBlok.text,
+            _controllerNoHome.text,
+            _controllerEmail.text,
+            _controllerPhone.text,
+            widget.listWarga.is_rw,
+            widget.listWarga.is_rt,
+            _controllerNoRw.text,
+            _controllerNoRt.text,
+            blockPreference.idPerumahan ?? "",
+            dropdownValueKawin,
+            dropdownValue),
+      ),
     );
   }
 }

@@ -59,7 +59,7 @@ class _WargaPagesState extends State<WargaPages> {
             color: Colors.black,
             icon: new Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.maybePop(context);
             }),
       ),
       body: SafeArea(

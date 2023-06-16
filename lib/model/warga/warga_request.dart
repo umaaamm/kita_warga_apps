@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:kita_warga_apps/model/warga/warga_request_update.dart';
 
-class WargaRequest {
+
+class WargaRequest extends StateWarga {
   final String id_warga;
   final String nama_warga;
   final String blok_rumah;
@@ -30,4 +32,8 @@ class WargaRequest {
     this.status_pernikahan,
     this.jenis_kelamin,
   );
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
 }
