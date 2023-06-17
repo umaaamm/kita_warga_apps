@@ -1,7 +1,7 @@
 class Login {
   final String username;
   final String email;
-  final int role;
+  final String role;
   final String accessToken;
   final String id_pengurus;
   final String id_perumahan;

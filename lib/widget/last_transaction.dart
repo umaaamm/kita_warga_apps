@@ -6,6 +6,7 @@ import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
 import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
 import 'package:kita_warga_apps/pages/kas_bon/kas_bon_pages.dart';
+import 'package:kita_warga_apps/pages/pengeluaran/pengeluaran_pages.dart';
 import 'package:kita_warga_apps/pages/warga/warga_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
@@ -102,7 +103,16 @@ class _LastTransactionState extends State<LastTransaction> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             menuPengeluaran(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return PengeluaranPages();
+                    },
+                  ),
+                );
+              },
             ),
             menuWarga(
               onPressed: () {
