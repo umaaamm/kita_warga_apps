@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kita_warga_apps/bloc/dashboard/get_dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx.dart';
-import 'package:kita_warga_apps/model/dashboard/dashboard_last_trx_response.dart';
+import 'package:kita_warga_apps/bloc/app_states.dart';
+import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
+import 'package:kita_warga_apps/bloc/kasbon/kasbon_bloc.dart';
+import 'package:kita_warga_apps/components/alert_logout.dart';
+import 'package:kita_warga_apps/components/rounded_button.dart';
+import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
+import 'package:kita_warga_apps/model/kasbon/kasbon_delete_request.dart';
+import 'package:kita_warga_apps/model/kasbon/list_kasbon.dart';
+import 'package:kita_warga_apps/model/kasbon/list_kasbon_response.dart';
+import 'package:kita_warga_apps/repository/kasbon_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
+import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 import 'package:kita_warga_apps/utils/text_format.dart';
 
@@ -15,17 +24,21 @@ class ListKasBon extends StatefulWidget {
 }
 
 class _ListKasBonState extends State<ListKasBon> {
+  bool isRefresh = false;
   @override
   void initState() {
     super.initState();
-    dashboardLastTrxBloc..getDashboardLastTrx();
+    getListKasbonBloc..getListKasbon(GetListKasbonRequest(1, ""));
+    setState(() {
+      isRefresh = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DashboardLastTrxResponse>(
-      stream: dashboardLastTrxBloc.subject.stream,
-      builder: (context, AsyncSnapshot<DashboardLastTrxResponse> snapshot) {
+    return StreamBuilder<ListKasbonResponse>(
+      stream: getListKasbonBloc.subject.stream,
+      builder: (context, AsyncSnapshot<ListKasbonResponse> snapshot) {
         if (!snapshot.hasData) {
           return _buildLoadingWidget();
         }
@@ -36,9 +49,16 @@ class _ListKasBonState extends State<ListKasBon> {
 
         final list = snapshot.data!;
         if (list.error != null && list.error!.isNotEmpty) {
+          if (list.isExpired.isExpired) {
+            return AlertLogout();
+          }
           return _buildErrorWidget(list.error.toString());
         }
         ;
+
+        if (list.listKasbon.isEmpty) {
+          return _buildNoDataWidget();
+        }
 
         return _resultWidget(list);
       },
@@ -72,8 +92,41 @@ class _ListKasBonState extends State<ListKasBon> {
     ));
   }
 
-  Widget _resultWidget(DashboardLastTrxResponse data) {
-    List<DashboardLastTrx>? lastTrx = data.dashboardLastTrx;
+  Widget _buildNoDataWidget() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(
+                  Icons.supervised_user_circle,
+                ),
+                iconSize: 50,
+                color: blueColor,
+                splashColor: blueColor,
+                onPressed: () {},
+              ),
+            ),
+            Flexible(
+              child: Text(
+                "Data Warga yang anda cari tidak ditemukan.",
+                textAlign: TextAlign.center,
+                style:
+                    regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _resultWidget(ListKasbonResponse data) {
+    List<ListKasbon>? list = data.listKasbon;
     return Column(
       children: [
         Container(
@@ -81,7 +134,7 @@ class _ListKasBonState extends State<ListKasBon> {
           margin:
               EdgeInsets.only(top: 12.h, left: 12.w, right: 12.w, bottom: 12.h),
           child: Text(
-            'Daftar Warga',
+            'Daftar Kasbon',
             style: blackTextStyle.copyWith(
               fontSize: 16,
             ),
@@ -91,91 +144,238 @@ class _ListKasBonState extends State<ListKasBon> {
           child: Container(
             child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: data.dashboardLastTrx.length,
+              itemCount: data.listKasbon.length,
               itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  margin: EdgeInsets.only(
-                      left: 10.w,
-                      right: 10.w,
-                      bottom: index == lastTrx.length - 1 ? 75.h : 8.h),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.r)),
-                  child: Row(
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
+                final item = data.listKasbon[index];
+                return RepositoryProvider(
+                    create: (context) => KasbonRepository(),
+                    child: BlocProvider(
+                      create: (context) => KasbonBloc(
+                        kasbonRepository:
+                            RepositoryProvider.of<KasbonRepository>(context),
+                      ),
+                      child: Dismissible(
+                        direction: DismissDirection.endToStart,
+                        key: Key(item.id_kasbon),
+                        confirmDismiss: (direction) async {
+                          showBottom(context, list[index]);
+                        },
+                        background: Padding(
+                          padding: EdgeInsets.only(right: 10.h, left: 10.h),
+                          child: Container(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 20),
+                                    child: Text(
+                                      "Delete",
+                                      style: regularTextStyle.copyWith(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white),
+                                    ),
+                                  )
+                                ]),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.r),
+                              color: Colors.red,
+                            ),
                           ),
-                          child: Center(
-                            child: Container(
-                                width: ScreenUtil().setWidth(70),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  color: blueColor,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    TextFormat.getInitials(
-                                        lastTrx[index].nama as String),
-                                    style: blackTextStyle.copyWith(
-                                        color: whiteColor, fontSize: 45.sp),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) {
+                            //       return DetailWarga(listWarga: listWarga[index]);
+                            //     },
+                            //   ),
+                            // );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 10.h),
+                            margin: EdgeInsets.only(
+                                left: 10.w,
+                                right: 10.w,
+                                bottom: index == list.length - 1 ? 75.h : 8.h),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20.r)),
+                            child: Row(
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                    ),
+                                    child: Center(
+                                      child: Container(
+                                          width: ScreenUtil().setWidth(70),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r),
+                                            color: blueColor,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              TextFormat.getInitials(list[index]
+                                                  .nama_karyawan as String),
+                                              style: blackTextStyle.copyWith(
+                                                  color: whiteColor,
+                                                  fontSize: 45.sp),
+                                            ),
+                                          )),
+                                    )),
+                                Center(
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          list[index].nama_karyawan,
+                                          style: regularTextStyle.copyWith(
+                                              fontSize: 21,
+                                              color: blueColor,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Text(
+                                          CurrencyFormat.convertToIdr(
+                                              int.parse(list[index]
+                                                  .angsuran_per_bulan),
+                                              0),
+                                          style: regularTextStyle.copyWith(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w700,
+                                              color: blueColor),
+                                        ),
+                                        Text(
+                                          CurrencyFormat.convertDateEpoch(
+                                              int.parse(list[index]
+                                                  .tanggal_transaksi)),
+                                          style: regularTextStyle.copyWith(
+                                              fontSize: 12, color: blueColor),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                )),
-                          )),
-                      Center(
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                lastTrx[index].nama,
-                                style: regularTextStyle.copyWith(
-                                    fontSize: 21,
-                                    color: blueColor,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                CurrencyFormat.convertToIdr(
-                                    int.parse(lastTrx[index].balance), 0),
-                                style: regularTextStyle.copyWith(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                    color: blueColor),
-                              ),
-                              Text(
-                                CurrencyFormat.convertDateEpoch(
-                                    int.parse(lastTrx[index].tanggal)),
-                                style: regularTextStyle.copyWith(
-                                    fontSize: 12, color: blueColor),
-                              ),
-                            ],
+                                ),
+                                Spacer(),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      Spacer(),
-                      Container(
-                        margin: EdgeInsets.only(right: 20.w),
-                        child: Icon(
-                          int.parse(lastTrx[index].keterangan) == 1
-                              ? Icons.arrow_circle_down
-                              : Icons.arrow_circle_up,
-                          color: int.parse(lastTrx[index].keterangan) == 1
-                              ? Colors.red
-                              : Colors.green,
-                          size: 30.sp,
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                    ));
               },
             ),
           ),
         ),
       ],
+    );
+  }
+
+  _reloadData(BuildContext context) {
+    Navigator.pop(context);
+    getListKasbonBloc..getListKasbon(GetListKasbonRequest(1, ""));
+    const snackBar = SnackBar(
+      backgroundColor: blueColorConstant,
+      behavior: SnackBarBehavior.floating,
+      content: Text(
+        'Data berhasil dihapus.',
+        style: TextStyle(color: Colors.white, fontSize: 17),
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> showBottom(BuildContext context, ListKasbon listKasbon) {
+    return showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return RepositoryProvider(
+          create: (context) => KasbonRepository(),
+          child: BlocProvider(
+            create: (context) => KasbonBloc(
+                kasbonRepository:
+                    RepositoryProvider.of<KasbonRepository>(context)),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: 20, right: 20, top: 30, bottom: 30),
+                        child: Text(
+                          "Apakah anda yakin ingin menghapus data " +
+                              listKasbon.nama_karyawan +
+                              "?",
+                          style: regularTextStyle.copyWith(
+                              fontSize: 19, color: blueColor),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: BlocListener<KasbonBloc, AppServicesState>(
+                        listener: (context, state) {
+                          if (state is successServices) {
+                            return WidgetsBinding.instance.addPostFrameCallback(
+                                (_) => _reloadData(context));
+                          }
+                        },
+                        child: BlocBuilder<KasbonBloc, AppServicesState>(
+                          builder: (context, state) {
+                            print(state);
+                            if (state is loadingServices) {
+                              return _buildLoadingWidget();
+                            } else if (state is errorServices) {
+                              return const Center(
+                                  child: Text("Gagal Menghapus Data"));
+                            }
+                            return Column(
+                              children: [
+                                RoundedButton(
+                                  text: "Hapus",
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    BlocProvider.of<KasbonBloc>(context).add(
+                                      KasbonDeleteRequest(listKasbon.id_kasbon),
+                                    );
+                                  },
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 30),
+                                  child: RoundedButton(
+                                    text: "Batal",
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
