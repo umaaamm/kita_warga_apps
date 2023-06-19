@@ -7,7 +7,7 @@ class GetListKategoriBloc {
   final BehaviorSubject<KategoriResponse> _subject =
   BehaviorSubject<KategoriResponse>();
 
-  getDashboardLastTrx() async {
+  getListKategori() async {
     KategoriResponse response = await _repository.getListKategori();
     _subject.sink.add(response);
   }

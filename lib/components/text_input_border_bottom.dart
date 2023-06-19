@@ -8,12 +8,14 @@ class TextInputBorderBottom extends StatelessWidget {
   final bool? readOnly;
   final ValueChanged<String> onChanged;
   final TextEditingController? controllerText;
+  final void Function()? onPressed;
   const TextInputBorderBottom(
       {super.key,
       required this.labelText,
       required this.hintText,
       required this.onChanged,
       this.readOnly,
+        this.onPressed,
       this.controllerText});
 
   @override
@@ -21,6 +23,7 @@ class TextInputBorderBottom extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: TextField(
+        onTap: onPressed,
         readOnly: readOnly ?? false,
         onChanged: onChanged,
         controller: controllerText,

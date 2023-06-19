@@ -1,11 +1,9 @@
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request_add.dart';
 
-class PengeluaranDeleteRequest extends StatePengeluaran {
-  final String id_transaksi;
+class PengeluaranRequestUpdate extends StatePengeluaran {
+  final PengeluaranRequestAdd pengeluaranRequestAdd;
 
-  PengeluaranDeleteRequest(
-      this.id_transaksi,
-      );
+  PengeluaranRequestUpdate(this.pengeluaranRequestAdd);
 
   @override
   // TODO: implement props
