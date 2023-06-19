@@ -1,25 +1,21 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
-import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/bloc/kategori_bloc/get_list_kategori_bloc.dart';
 import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
 import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
-import 'package:kita_warga_apps/components/dropdown_component.dart';
-import 'package:kita_warga_apps/components/dropdown_kategori.dart';
+import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
-import 'package:kita_warga_apps/components/switch_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/kategori/kategori_response.dart';
 import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
-import 'package:kita_warga_apps/model/warga/warga_request.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../model/kategori/kategori.dart';
-import '../../../model/kategori/kategori_response.dart';
 import '../../../repository/warga_repository.dart';
 
 class AddPengeluaranPages extends StatefulWidget {
@@ -33,9 +29,16 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   @override
   void initState() {
     // TODO: implement initState
+    getListKategoriBloc..getListKategori();
     super.initState();
-    // _selectedValue = Kategori("d4609ef0-0d8e-11ee-be56-0242ac120002", "pilih salah satu", "pilih salah satu");
+    setState(() {
+      isRefresh = false;
+    });
   }
+
+  bool isRefresh = false;
+
+  final TextEditingController _controllerNamaKategori = TextEditingController();
 
   static const List<String> list = <String>[
     'Pilih Salah Satu',
@@ -51,7 +54,6 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   ];
   // String dropdownValue = list.first;
   // String dropdownValueKawin = listKawin.first;
-
 
   Kategori? _selectedValue;
 
@@ -69,6 +71,7 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
       id_rw = "",
       id_perumahan = "",
       status_pernikahan = "",
+      id_kategori = "",
       jenis_kelamin = "";
 
   @override
@@ -113,29 +116,29 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                         nama_transaksi = value;
                       });
                     }),
-                dropdownKategori(
-                    onChanged: (Kategori? newValue) {
-                      setState(() {
-                        // _selectedValue = newValue!;
-                        _selectedValue = newValue!;
-                      });
-                    },
-                    dropdownValueParent: _selectedValue
+                TextInputBorderBottom(
+                  controllerText: _controllerNamaKategori,
+                  onPressed: () {
+                    showBottomKategori(context, _controllerNamaKategori);
+                  },
+                  readOnly: true,
+                  labelText: 'Pilih Kategori Transaksi',
+                  hintText: "Pilih Kategori Transaksi",
+                  onChanged: (value) {
+                    nilai_transaksi = value;
+                  },
                 ),
                 TextInputBorderBottom(
-                    labelText: "Nama Kategori Transaksi",
-                    hintText: "Masukkan Nama Kategori Transaksi",
-                    onChanged: (value) {
-                      nama_kategori_transaksi = value;
-                    }),
-                dropdownKategori(
-                    onChanged: (Kategori? newValue) {
-                      setState(() {
-                        // _selectedValue = newValue!;
-                        _selectedValue = newValue!;
-                      });
-                    },
-                    dropdownValueParent: _selectedValue
+                  controllerText: _controllerNamaKategori,
+                  onPressed: () {
+                    showBottomKategori(context, _controllerNamaKategori);
+                  },
+                  readOnly: true,
+                  labelText: 'Pilih Kasbon',
+                  hintText: "Pilih Kasbon",
+                  onChanged: (value) {
+                    nilai_transaksi = value;
+                  },
                 ),
                 TextInputBorderBottom(
                     labelText: "Nilai Transaksi",
@@ -186,6 +189,48 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     );
   }
 
+  Future<void> showBottomKategori(BuildContext context, TextEditingController controller) {
+    return showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StreamBuilder<KategoriResponse>(
+          stream: getListKategoriBloc.subject.stream,
+          builder: (context, AsyncSnapshot<KategoriResponse> snapshot) {
+            if (!snapshot.hasData) {
+              return _buildLoadingWidget();
+            }
+
+            if (snapshot.hasError) {
+              if (snapshot.data!.responsExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(snapshot.error.toString());
+            }
+
+            final list = snapshot.data!;
+            if (list.error != null && list.error!.isNotEmpty) {
+              if (list.responsExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(list.error.toString());
+            }
+            ;
+
+            if (list.kategori.isEmpty) {
+              return _buildNoDataWidget();
+            }
+
+            return ContentBottomSheetKategori(controllerNamaKategori: controller,kategoriResponse: list);
+          },
+        );
+      },
+    );
+  }
+
   _reloadData(BuildContext context) {
     Navigator.pop(context);
     getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
@@ -200,28 +245,103 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Widget _buildLoadingWidget() {
+  Widget _buildNoDataWidget() {
     return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 25.0,
-              width: 25.0,
-              child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(blueColor),
-                strokeWidth: 4.0,
+            Container(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(
+                  Icons.account_balance_wallet,
+                ),
+                iconSize: 50,
+                color: blueColor,
+                splashColor: blueColor,
+                onPressed: () {},
               ),
-            )
+            ),
+            Flexible(
+              child: Text(
+                "Data Pengeluaran yang anda cari tidak ditemukan.",
+                textAlign:TextAlign.center,
+                style:
+                regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+              ),
+            ),
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorWidget(String error) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            isRefresh
+                ? _buildLoadingWidget()
+                : Container(
+              alignment: Alignment.center,
+              child: IconButton(
+                icon: Icon(
+                  Icons.refresh,
+                ),
+                iconSize: 50,
+                color: blueColor,
+                splashColor: blueColor,
+                onPressed: () {
+                  setState(() {
+                    isRefresh = true;
+                  });
+                  getListKategoriBloc..getListKategori();
+                },
+              ),
+            ),
+            Text(
+              isRefresh
+                  ? "Sedang Mengambil Data"
+                  : "Tekan Icon untuk mengulagi",
+              style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+            ),
+            Text(
+              isRefresh ? "" : "Ops!, Terjadi kesalahan.",
+              style: regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingWidget() {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: 25.0,
+          width: 25.0,
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(blueColor),
+            strokeWidth: 4.0,
+          ),
+        )
+      ],
+    ));
   }
 
   void Snack(String text) {
     final snackBar = SnackBar(
       content: Text(text,
           style:
-          regularTextStyle.copyWith(fontSize: 16.sp, color: Colors.white)),
+              regularTextStyle.copyWith(fontSize: 16.sp, color: Colors.white)),
       backgroundColor: Colors.red,
     );
 
@@ -280,5 +400,67 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     //       status_pernikahan,
     //       jenis_kelamin),
     // );
+  }
+}
+
+class ContentBottomSheetKategori extends StatelessWidget {
+  final KategoriResponse kategoriResponse;
+  const ContentBottomSheetKategori({
+    super.key,
+    required this.kategoriResponse,
+    required TextEditingController controllerNamaKategori,
+  }) : _controllerNamaKategori = controllerNamaKategori;
+
+  final TextEditingController _controllerNamaKategori;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Flexible(
+          child: Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+            child: Text(
+              "Pilih Salah Satu Kategori",
+              style:
+                  regularTextStyle.copyWith(fontSize: 19, color: blueColor),
+            ),
+          ),
+        ),
+        Container(
+          // margin: EdgeInsets.only(top: 20),
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: kategoriResponse.kategori.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                _controllerNamaKategori.text = kategoriResponse.kategori[index].nama_kategori_transaksi;
+                Navigator.pop(context);
+                },
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 20.h, right: 20.h, top: 5.h, bottom: 5.h),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: greyColorLight,
+                        borderRadius: BorderRadius.circular(12.r)),
+                    height: 50.h,
+                    child: Center(
+                      child: Text(
+                        kategoriResponse.kategori[index].nama_kategori_transaksi,
+                        style: regularTextStyle.copyWith(
+                            fontSize: 17, color: blueColor),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        )
+      ],
+    );
   }
 }

@@ -3,74 +3,73 @@ import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_delete_request.dart';
-import 'package:kita_warga_apps/model/warga/warga_request.dart';
-import 'package:kita_warga_apps/model/warga/warga_request_update.dart';
+import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request_update.dart';
 import 'package:kita_warga_apps/repository/pengeluaran_repository.dart';
-import 'package:kita_warga_apps/repository/warga_repository.dart';
 
-import '../../model/warga/warga_delete_request.dart';
+import '../../model/pengeluaran/pengeluaran_request_add.dart';
 
 class PengeluaranBloc extends Bloc<StatePengeluaran, AppServicesState> {
   final PengeluaranRepository pengeluaranRepository;
-  PengeluaranBloc({required this.pengeluaranRepository}) : super(InitialState()) {
-    // on<WargaRequest>((event, emit) => AddWarga(event, emit));
-    // on<WargaRequestUpdate>((event, emit) => UpdateWarga(event, emit));
-    on<PengeluaranDeleteRequest>((event, emit) => deletePengeluaran(event, emit));
+  PengeluaranBloc({required this.pengeluaranRepository})
+      : super(InitialState()) {
+    on<PengeluaranRequestAdd>((event, emit) => AddWarga(event, emit));
+    on<PengeluaranRequestUpdate>(
+        (event, emit) => UpdatePengeluaran(event, emit));
+    on<PengeluaranDeleteRequest>(
+        (event, emit) => deletePengeluaran(event, emit));
   }
-  // Future AddWarga(WargaRequest event, Emitter<AppServicesState> emit) async {
-  //   try {
-  //     emit(loadingServices());
-  //     GeneralResponsePost response = await wargaRepository.addWarga(
-  //         WargaRequest(
-  //             event.id_warga,
-  //             event.nama_warga,
-  //             event.blok_rumah,
-  //             event.nomor_rumah,
-  //             event.email,
-  //             event.nomor_hp,
-  //             event.is_rt,
-  //             event.is_rw,
-  //             event.id_rw,
-  //             event.id_rt,
-  //             event.id_perumahan,
-  //             event.status_pernikahan,
-  //             event.jenis_kelamin));
-  //
-  //     emit(successServices());
-  //     return;
-  //   } catch (e) {
-  //     emit(errorServices(e.toString()));
-  //   }
-  // }
-  // Future UpdateWarga(WargaRequestUpdate event, Emitter<AppServicesState> emit) async {
-  //   try {
-  //     emit(loadingServices());
-  //     GeneralResponsePost response = await wargaRepository.updateWarga(
-  //         WargaRequestUpdate(WargaRequest(
-  //             event.wargaRequest.id_warga,
-  //             event.wargaRequest.nama_warga,
-  //             event.wargaRequest.blok_rumah,
-  //             event.wargaRequest.nomor_rumah,
-  //             event.wargaRequest.email,
-  //             event.wargaRequest.nomor_hp,
-  //             event.wargaRequest.is_rt,
-  //             event.wargaRequest.is_rw,
-  //             event.wargaRequest.id_rw,
-  //             event.wargaRequest.id_rt,
-  //             event.wargaRequest.id_perumahan,
-  //             event.wargaRequest.status_pernikahan,
-  //             event.wargaRequest.jenis_kelamin)));
-  //
-  //     emit(successServices());
-  //     return;
-  //   } catch (e) {
-  //     emit(errorServices(e.toString()));
-  //   }
-  // }
-  Future deletePengeluaran(PengeluaranDeleteRequest event, Emitter<AppServicesState> emit) async {
+  Future AddWarga(
+      PengeluaranRequestAdd event, Emitter<AppServicesState> emit) async {
+    try {
+      emit(loadingServices());
+      GeneralResponsePost response = await pengeluaranRepository.addPengeluaran(
+          Pengeluaran(
+              event.id_transaksi,
+              event.nama_transaksi,
+              event.id_kategori,
+              event.tanggal_transaksi,
+              event.nilai_transaksi,
+              event.keterangan,
+              event.bukti_foto,
+              event.id_kasbon,
+              event.kategori_transaksi));
+
+      emit(successServices());
+      return;
+    } catch (e) {
+      emit(errorServices(e.toString()));
+    }
+  }
+
+  Future UpdatePengeluaran(
+      PengeluaranRequestUpdate event, Emitter<AppServicesState> emit) async {
+    try {
+      emit(loadingServices());
+      GeneralResponsePost response = await pengeluaranRepository
+          .updatePengeluaran(PengeluaranRequestUpdate(PengeluaranRequestAdd(
+              event.pengeluaranRequestAdd.id_transaksi,
+              event.pengeluaranRequestAdd.nama_transaksi,
+              event.pengeluaranRequestAdd.id_kategori,
+              event.pengeluaranRequestAdd.tanggal_transaksi,
+              event.pengeluaranRequestAdd.nilai_transaksi,
+              event.pengeluaranRequestAdd.keterangan,
+              event.pengeluaranRequestAdd.bukti_foto,
+              event.pengeluaranRequestAdd.id_kasbon,
+              event.pengeluaranRequestAdd.kategori_transaksi)));
+
+      emit(successServices());
+      return;
+    } catch (e) {
+      emit(errorServices(e.toString()));
+    }
+  }
+
+  Future deletePengeluaran(
+      PengeluaranDeleteRequest event, Emitter<AppServicesState> emit) async {
     emit(loadingServices());
     try {
-      GeneralResponsePost response = await pengeluaranRepository.deletePengeluaran(PengeluaranDeleteRequest(event.id_transaksi));
+      GeneralResponsePost response = await pengeluaranRepository
+          .deletePengeluaran(PengeluaranDeleteRequest(event.id_transaksi));
       emit(successServices());
       return;
     } catch (e) {

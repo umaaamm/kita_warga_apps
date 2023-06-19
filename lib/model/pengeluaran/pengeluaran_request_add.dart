@@ -1,6 +1,16 @@
+import 'dart:ffi';
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 
-class Pengeluaran {
+@immutable
+abstract class StatePengeluaran extends Equatable {
+  const StatePengeluaran();
+}
+
+
+class PengeluaranRequestAdd extends StatePengeluaran {
   final String id_transaksi;
   final String nama_transaksi;
   final String id_kategori;
@@ -11,7 +21,7 @@ class Pengeluaran {
   final String keterangan;
   final String bukti_foto;
 
-  Pengeluaran(this.id_transaksi,
+  PengeluaranRequestAdd(this.id_transaksi,
       this.nama_transaksi,
       this.id_kategori,
       this.id_kasbon,
@@ -20,17 +30,6 @@ class Pengeluaran {
       this.nilai_transaksi,
       this.keterangan,
       this.bukti_foto);
-
-  Pengeluaran.fromJson(Map<String, dynamic> json)
-      : id_transaksi = json["id_transaksi"],
-        nama_transaksi = json["nama_transaksi"],
-        id_kategori = json["id_kategori"],
-        id_kasbon = json["id_kasbon"],
-        kategori_transaksi = json["kategori_transaksi"],
-        tanggal_transaksi = json["tanggal_transaksi"],
-        nilai_transaksi = json["nilai_transaksi"],
-        keterangan = json["keterangan"],
-        bukti_foto = json["bukti_foto"];
 
   @override
   // TODO: implement props

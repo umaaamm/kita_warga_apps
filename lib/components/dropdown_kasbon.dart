@@ -29,7 +29,7 @@ class _dropdownKasbonState extends State<dropdownKasbon> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getListKategoriBloc..getDashboardLastTrx();
+    getListKategoriBloc..getListKategori();
     setState(() {
       isRefresh = false;
     });
@@ -143,7 +143,7 @@ class _dropdownKasbonState extends State<dropdownKasbon> {
                   setState(() {
                     isRefresh = true;
                   });
-                  getListKategoriBloc..getDashboardLastTrx();
+                  getListKategoriBloc..getListKategori();
                 },
               ),
             ),

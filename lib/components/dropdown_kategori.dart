@@ -29,7 +29,7 @@ class _dropdownKategoriState extends State<dropdownKategori> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getListKategoriBloc..getDashboardLastTrx();
+    getListKategoriBloc..getListKategori();
     setState(() {
       isRefresh = false;
     });
@@ -143,7 +143,7 @@ class _dropdownKategoriState extends State<dropdownKategori> {
                   setState(() {
                     isRefresh = true;
                   });
-                  getListKategoriBloc..getDashboardLastTrx();
+                  getListKategoriBloc..getListKategori();
                 },
               ),
             ),
