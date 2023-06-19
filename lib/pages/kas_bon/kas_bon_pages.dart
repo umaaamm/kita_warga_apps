@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/components/rounded_input_search.dart';
+import 'package:kita_warga_apps/pages/kas_bon/add_kas_bon/add_kasbon_pages.dart';
 import 'package:kita_warga_apps/pages/kas_bon/list_kas_bon.dart';
 import 'package:kita_warga_apps/pages/warga/list_shorting.dart';
 import 'package:kita_warga_apps/pages/warga/list_warga.dart';
@@ -30,7 +31,17 @@ class _KasBonPagesState extends State<KasBonPages> {
           new IconButton(
               color: Colors.black,
               icon: new Icon(Icons.add_circle),
-              onPressed: () {}),
+          // AddKasbonPages
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return AddKasbonPages();
+                    },
+                  ),
+                );
+              }),
         ],
         leading: new IconButton(
             color: Colors.black,

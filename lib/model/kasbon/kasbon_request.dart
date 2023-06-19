@@ -7,17 +7,9 @@ class KasbonRequest extends StateKasbon {
   final String id_karyawan;
   final String detail_transaksi;
   final String pinjaman;
-  final bool tenor;
-  final bool angsuran_per_bulan;
+  final String tenor;
+  final String angsuran_per_bulan;
   final String keterangan;
-  final String createdAt;
-  final String updatedAt;
-  final String posisi;
-  final String sisa_kasbon;
-  final String id_perumahan;
-  final String nama_perumahan;
-  final String alamat_perumahan;
-  final String biaya_ipl;
 
   KasbonRequest(
     this.id_kasbon,
@@ -28,15 +20,7 @@ class KasbonRequest extends StateKasbon {
     this.pinjaman,
     this.tenor,
     this.angsuran_per_bulan,
-    this.keterangan,
-    this.createdAt,
-    this.updatedAt,
-    this.posisi,
-    this.sisa_kasbon,
-    this.id_perumahan,
-    this.nama_perumahan,
-    this.alamat_perumahan,
-    this.biaya_ipl,
+    this.keterangan
   );
 
   @override
