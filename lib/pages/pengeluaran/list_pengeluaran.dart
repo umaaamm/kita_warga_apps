@@ -127,9 +127,8 @@ class _ListPengeluaranWidgetState extends State<ListPengeluaranWidget> {
                                     (_) => _reloadData(context));
                           }
                         },
-                        child: BlocBuilder<WargaBloc, AppServicesState>(
+                        child: BlocBuilder<PengeluaranBloc, AppServicesState>(
                           builder: (context, state) {
-                            print(state);
                             if (state is loadingServices) {
                               return _buildLoadingWidget();
                             } else if (state is errorServices) {
@@ -198,7 +197,7 @@ class _ListPengeluaranWidgetState extends State<ListPengeluaranWidget> {
               alignment: Alignment.center,
               child: IconButton(
                 icon: Icon(
-                  Icons.supervised_user_circle,
+                  Icons.account_balance_wallet,
                 ),
                 iconSize: 50,
                 color: blueColor,
@@ -242,8 +241,8 @@ class _ListPengeluaranWidgetState extends State<ListPengeluaranWidget> {
                   setState(() {
                     isRefresh = true;
                   });
-                  getListWargaBloc
-                    ..getListWarga(GetListWargaRequest(1, ""));
+                  getListPengeluaranBloc
+                    ..getListPengeluaran(GetListPengeluaranRequest(1, ""));
                 },
               ),
             ),

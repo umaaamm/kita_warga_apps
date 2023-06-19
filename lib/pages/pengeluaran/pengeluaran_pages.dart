@@ -2,8 +2,10 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kita_warga_apps/bloc/pengeluaran/get_list_pengeluaran.dart';
 import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
 import 'package:kita_warga_apps/components/rounded_input_search.dart';
+import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request.dart';
 import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
 import 'package:kita_warga_apps/pages/pengeluaran/list_pengeluaran.dart';
 import 'package:kita_warga_apps/pages/warga/add_warga/add_warga_pages.dart';
@@ -14,6 +16,7 @@ import 'package:kita_warga_apps/utils/constant.dart';
 import 'dart:async';
 
 import '../../theme.dart';
+import 'add_pengeluaran/add_pengeluaran.dart';
 
 class PengeluaranPages extends StatefulWidget {
   @override
@@ -50,7 +53,7 @@ class _PengeluaranPagesState extends State<PengeluaranPages> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return AddWargaPages();
+                      return AddPengeluaranPages();
                     },
                   ),
                 );
@@ -90,7 +93,7 @@ class _PengeluaranPagesState extends State<PengeluaranPages> {
                 onChanged: (value) {
                   if (_debounce?.isActive ?? false) _debounce?.cancel();
                   _debounce = Timer(const Duration(milliseconds: 500), () {
-                    getListWargaBloc..getListWarga(GetListWargaRequest(3, value));
+                    getListPengeluaranBloc..getListPengeluaran(GetListPengeluaranRequest(3, value));
                   });
                 },
               ),
