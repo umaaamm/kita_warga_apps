@@ -36,6 +36,7 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     super.initState();
     // _selectedValue = Kategori("d4609ef0-0d8e-11ee-be56-0242ac120002", "pilih salah satu", "pilih salah satu");
   }
+  final TextEditingController _controllerNamaKategori = TextEditingController();
 
   static const List<String> list = <String>[
     'Pilih Salah Satu',
@@ -118,16 +119,13 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                       setState(() {
                         // _selectedValue = newValue!;
                         _selectedValue = newValue!;
+                        setState(() {
+                          nama_kategori_transaksi = _controllerNamaKategori.text = newValue.nama_kategori_transaksi!;
+                        });
                       });
                     },
                     dropdownValueParent: _selectedValue
                 ),
-                TextInputBorderBottom(
-                    labelText: "Nama Kategori Transaksi",
-                    hintText: "Masukkan Nama Kategori Transaksi",
-                    onChanged: (value) {
-                      nama_kategori_transaksi = value;
-                    }),
                 dropdownKategori(
                     onChanged: (Kategori? newValue) {
                       setState(() {

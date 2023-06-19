@@ -10,6 +10,7 @@ import 'package:kita_warga_apps/widget/floating_footer.dart';
 import 'package:kita_warga_apps/widget/last_transaction.dart';
 import 'package:kita_warga_apps/widget/summary_home.dart';
 import 'package:kita_warga_apps/widget/total_balance.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../bloc/dashboard/get_dashboard.dart';
 
@@ -86,6 +87,10 @@ class _HomePagesState extends State<HomePages> {
     ));
   }
 
+  Future<void> _refreshDashboard() async {
+    dashboardBloc..getDashboard();
+  }
+
   Widget _resultWidget(DashboardResponse data) {
     return Scaffold(
       body: Scaffold(
@@ -94,46 +99,54 @@ class _HomePagesState extends State<HomePages> {
           padding: EdgeInsets.only(top: 25),
           child: SafeArea(
             bottom: false,
-            child: Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25.r),
-                  child: Column(
-                    children: [
-                      TotalBalance(data.dashboard.total_saldo),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      Text('Laporan Singkat',
-                          style: regularTextStyle.copyWith(
-                              fontSize: 14.sp,
-                              color: blueColor,
-                              fontWeight: FontWeight.w700)),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      SummaryHome(
-                        DashboardResponse(
-                            data.dashboard, data.error, data.responseExpired),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                    ],
+            child: LiquidPullToRefresh(
+              springAnimationDurationInMilliseconds: 700,
+              height: 80,
+              backgroundColor: blueColor,
+              color: yellowColor,
+              showChildOpacityTransition: false,
+              onRefresh: _refreshDashboard, // refresh callback
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 25.r),
+                    child: Column(
+                      children: [
+                        TotalBalance(data.dashboard.total_saldo),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Text('Laporan Singkat',
+                            style: regularTextStyle.copyWith(
+                                fontSize: 14.sp,
+                                color: blueColor,
+                                fontWeight: FontWeight.w700)),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        SummaryHome(
+                          DashboardResponse(
+                              data.dashboard, data.error, data.responseExpired),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  height: ScreenUtil().setHeight(400),
-                  decoration: BoxDecoration(
-                    color: lightBackground,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(35.r),
-                        topRight: Radius.circular(35.r)),
+                  Container(
+                    height: ScreenUtil().setHeight(400),
+                    decoration: BoxDecoration(
+                      color: lightBackground,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(35.r),
+                          topRight: Radius.circular(35.r)),
+                    ),
+                    child: LastTransaction(),
                   ),
-                  child: LastTransaction(),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -144,5 +157,3 @@ class _HomePagesState extends State<HomePages> {
     );
   }
 }
-
-

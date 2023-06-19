@@ -5,6 +5,7 @@ import 'package:kita_warga_apps/theme.dart';
 class TextInputBorderBottom extends StatelessWidget {
   final String labelText;
   final String hintText;
+  final bool? readOnly;
   final ValueChanged<String> onChanged;
   final TextEditingController? controllerText;
   const TextInputBorderBottom(
@@ -12,6 +13,7 @@ class TextInputBorderBottom extends StatelessWidget {
       required this.labelText,
       required this.hintText,
       required this.onChanged,
+      this.readOnly,
       this.controllerText});
 
   @override
@@ -19,6 +21,7 @@ class TextInputBorderBottom extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: TextField(
+        readOnly: readOnly ?? false,
         onChanged: onChanged,
         controller: controllerText,
         style: regularTextStyle.copyWith(fontSize: 16.sp),
