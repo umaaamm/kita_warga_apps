@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/model/general_response_post.dart';
-import 'package:kita_warga_apps/model/pengeluaran/pengeluaran.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_delete_request.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request_update.dart';
 import 'package:kita_warga_apps/repository/pengeluaran_repository.dart';
@@ -12,27 +11,27 @@ class PengeluaranBloc extends Bloc<StatePengeluaran, AppServicesState> {
   final PengeluaranRepository pengeluaranRepository;
   PengeluaranBloc({required this.pengeluaranRepository})
       : super(InitialState()) {
-    on<PengeluaranRequestAdd>((event, emit) => AddWarga(event, emit));
+    on<PengeluaranRequestAdd>((event, emit) => addPengeluaran(event, emit));
     on<PengeluaranRequestUpdate>(
         (event, emit) => UpdatePengeluaran(event, emit));
     on<PengeluaranDeleteRequest>(
         (event, emit) => deletePengeluaran(event, emit));
   }
-  Future AddWarga(
+  Future addPengeluaran(
       PengeluaranRequestAdd event, Emitter<AppServicesState> emit) async {
     try {
       emit(loadingServices());
       GeneralResponsePost response = await pengeluaranRepository.addPengeluaran(
-          Pengeluaran(
+          PengeluaranRequestAdd(
               event.id_transaksi,
               event.nama_transaksi,
               event.id_kategori,
+              event.id_kasbon,
+              event.kategori_transaksi,
               event.tanggal_transaksi,
               event.nilai_transaksi,
               event.keterangan,
-              event.bukti_foto,
-              event.id_kasbon,
-              event.kategori_transaksi));
+              event.bukti_foto));
 
       emit(successServices());
       return;

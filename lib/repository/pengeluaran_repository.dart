@@ -20,27 +20,32 @@ class PengeluaranRepository {
   var updatePengeluaranUrl = '$mainUrl/api/admin/update/pengeluaran';
 
 
-  Future<GeneralResponsePost> addPengeluaran(Pengeluaran pengeluaran) async {
+  Future<GeneralResponsePost> addPengeluaran(PengeluaranRequestAdd pengeluaranRequestAdd) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
 
     try {
       var params = {
-        "id_transaksi": pengeluaran.id_transaksi,
-        "nama_transaksi": pengeluaran.nama_transaksi,
-        "id_kategori": pengeluaran.id_kategori,
-        "tanggal_transaksi": pengeluaran.tanggal_transaksi,
-        "nilai_transaksi": pengeluaran.nilai_transaksi,
-        "keterangan": pengeluaran.keterangan,
-        "bukti_foto": pengeluaran.bukti_foto,
-        "id_kasbon": pengeluaran.id_kasbon,
+        "id_transaksi": pengeluaranRequestAdd.id_transaksi,
+        "nama_transaksi": pengeluaranRequestAdd.nama_transaksi,
+        "id_kategori": pengeluaranRequestAdd.id_kategori,
+        "tanggal_transaksi": pengeluaranRequestAdd.tanggal_transaksi,
+        "nilai_transaksi": pengeluaranRequestAdd.nilai_transaksi,
+        "keterangan": pengeluaranRequestAdd.keterangan,
+        "bukti_foto": pengeluaranRequestAdd.bukti_foto,
+        "id_kasbon": pengeluaranRequestAdd.id_kasbon,
         "id_perumahan": prefs.get(AppConstant.idPerumahan),
-        "kategori_transaksi": pengeluaran.kategori_transaksi,
+        "kategori_transaksi": pengeluaranRequestAdd.kategori_transaksi,
       };
+
+      print(params);
 
       Response response = await _dio.post(addPengeluaranUrl,
           data: jsonEncode(params),
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
+
+      print(response);
       return GeneralResponsePost.fromJson(response.data);
     } catch (error, stacktrace) {
       if (error is DioError) {

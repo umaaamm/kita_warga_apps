@@ -2,21 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
+import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
 import 'package:kita_warga_apps/bloc/kategori_bloc/get_list_kategori_bloc.dart';
-import 'package:kita_warga_apps/bloc/warga/get_list_warga.dart';
-import 'package:kita_warga_apps/bloc/warga/warga_bloc.dart';
+import 'package:kita_warga_apps/bloc/pengeluaran/get_list_pengeluaran.dart';
+import 'package:kita_warga_apps/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
+import 'package:kita_warga_apps/model/kasbon/list_kasbon_response.dart';
 import 'package:kita_warga_apps/model/kategori/kategori_response.dart';
-import 'package:kita_warga_apps/model/warga/get_list_warga_request.dart';
+import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request.dart';
+import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request_add.dart';
+import 'package:kita_warga_apps/pages/pengeluaran/ContentBottomSheetKasbon.dart';
+import 'package:kita_warga_apps/pages/pengeluaran/ContentBottomSheetKategori.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
+import 'package:kita_warga_apps/repository/pengeluaran_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../../model/kategori/kategori.dart';
-import '../../../repository/warga_repository.dart';
 
 class AddPengeluaranPages extends StatefulWidget {
   const AddPengeluaranPages({super.key});
@@ -30,6 +35,7 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   void initState() {
     // TODO: implement initState
     getListKategoriBloc..getListKategori();
+    getListKasbonBloc..getListKasbon(GetListKasbonRequest(1, ""));
     super.initState();
     setState(() {
       isRefresh = false;
@@ -37,51 +43,28 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   }
 
   bool isRefresh = false;
-
   final TextEditingController _controllerNamaKategori = TextEditingController();
+  final TextEditingController _controllerKasbon = TextEditingController();
 
-  static const List<String> list = <String>[
-    'Pilih Salah Satu',
-    'Laki-Laki',
-    'Perempuan'
-  ];
-  static const List<String> listKawin = <String>[
-    'Pilih Salah Satu',
-    'Nikah',
-    'Lajang',
-    'Duda',
-    'Janda'
-  ];
-  // String dropdownValue = list.first;
-  // String dropdownValueKawin = listKawin.first;
-
-  Kategori? _selectedValue;
-
-  bool checkValueRT = false;
-  bool checkValueRW = false;
-  bool is_rw = false, is_rt = false;
   var uuid = Uuid();
-  String id_warga = "",
-      nama_transaksi = "",
-      blok_rumah = "",
-      keterangan = "",
-      nama_kategori_transaksi = "",
-      nilai_transaksi = "",
-      id_rt = "",
-      id_rw = "",
-      id_perumahan = "",
-      status_pernikahan = "",
+  String nama_transaksi = "",
       id_kategori = "",
-      jenis_kelamin = "";
+      tanggal_transaksi = "",
+      nilai_transaksi = "",
+      keterangan = "",
+      bukti_foto = "bukti_foto",
+      id_kasbon = "",
+      kategori_transaksi = "";
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
     return RepositoryProvider(
-      create: (context) => WargaRepository(),
+      create: (context) => PengeluaranRepository(),
       child: BlocProvider(
-        create: (context) => WargaBloc(
-            wargaRepository: RepositoryProvider.of<WargaRepository>(context)),
+        create: (context) => PengeluaranBloc(
+            pengeluaranRepository:
+                RepositoryProvider.of<PengeluaranRepository>(context)),
         child: Scaffold(
           backgroundColor: Colors.white,
           extendBodyBehindAppBar: true,
@@ -129,9 +112,9 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                   },
                 ),
                 TextInputBorderBottom(
-                  controllerText: _controllerNamaKategori,
+                  controllerText: _controllerKasbon,
                   onPressed: () {
-                    showBottomKategori(context, _controllerNamaKategori);
+                    showBottomKasbon(context, _controllerKasbon);
                   },
                   readOnly: true,
                   labelText: 'Pilih Kasbon',
@@ -156,13 +139,13 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                   padding: EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Container(
                     key: scaffoldKey,
-                    child: BlocListener<WargaBloc, AppServicesState>(
+                    child: BlocListener<PengeluaranBloc, AppServicesState>(
                       listener: (context, state) {
                         if (state is successServices) {
                           _reloadData(context);
                         }
                       },
-                      child: BlocBuilder<WargaBloc, AppServicesState>(
+                      child: BlocBuilder<PengeluaranBloc, AppServicesState>(
                         builder: (context, state) {
                           print(state);
                           if (state is loadingServices) {
@@ -189,7 +172,8 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     );
   }
 
-  Future<void> showBottomKategori(BuildContext context, TextEditingController controller) {
+  Future<void> showBottomKategori(
+      BuildContext context, TextEditingController controller) {
     return showModalBottomSheet<void>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
@@ -224,7 +208,73 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
               return _buildNoDataWidget();
             }
 
-            return ContentBottomSheetKategori(controllerNamaKategori: controller,kategoriResponse: list);
+            return ContentBottomSheetKategori(
+              controllerNamaKategori: controller,
+              kategoriResponse: list,
+              onPressed: (val) {
+                _controllerNamaKategori.text = val.nama_kategori_transaksi;
+                setState(() {
+                  id_kategori = val.id_kategori;
+                  kategori_transaksi = val.nama_kategori_transaksi;
+                });
+                Future.delayed(Duration.zero, () {
+                  Navigator.pop(context);
+                });
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> showBottomKasbon(
+      BuildContext context, TextEditingController controllerKasbon) {
+    return showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StreamBuilder<ListKasbonResponse>(
+          stream: getListKasbonBloc.subject.stream,
+          builder: (context, AsyncSnapshot<ListKasbonResponse> snapshot) {
+            if (!snapshot.hasData) {
+              return _buildLoadingWidget();
+            }
+
+            if (snapshot.hasError) {
+              if (snapshot.data!.isExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(snapshot.error.toString());
+            }
+
+            final list = snapshot.data!;
+            if (list.error != null && list.error!.isNotEmpty) {
+              if (list.isExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(list.error.toString());
+            }
+            ;
+
+            if (list.listKasbon.isEmpty) {
+              return _buildNoDataWidget();
+            }
+
+            return ContentBottomSheetKasbon(
+              controllerNamaKategori: controllerKasbon,
+              listKasbonResponse: list,
+              onPressed: (val) {
+                _controllerKasbon.text = val.detail_transaksi;
+                setState(() {
+                  id_kasbon = val.id_kasbon;
+                });
+                Navigator.pop(context);
+              },
+            );
           },
         );
       },
@@ -233,7 +283,8 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
 
   _reloadData(BuildContext context) {
     Navigator.pop(context);
-    getListWargaBloc..getListWarga(GetListWargaRequest(1, ""));
+    getListPengeluaranBloc
+      ..getListPengeluaran(GetListPengeluaranRequest(1, ""));
     const snackBar = SnackBar(
       backgroundColor: blueColorConstant,
       behavior: SnackBarBehavior.floating,
@@ -267,9 +318,9 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
             Flexible(
               child: Text(
                 "Data Pengeluaran yang anda cari tidak ditemukan.",
-                textAlign:TextAlign.center,
+                textAlign: TextAlign.center,
                 style:
-                regularTextStyle.copyWith(fontSize: 16, color: blueColor),
+                    regularTextStyle.copyWith(fontSize: 16, color: blueColor),
               ),
             ),
           ],
@@ -288,22 +339,22 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
             isRefresh
                 ? _buildLoadingWidget()
                 : Container(
-              alignment: Alignment.center,
-              child: IconButton(
-                icon: Icon(
-                  Icons.refresh,
-                ),
-                iconSize: 50,
-                color: blueColor,
-                splashColor: blueColor,
-                onPressed: () {
-                  setState(() {
-                    isRefresh = true;
-                  });
-                  getListKategoriBloc..getListKategori();
-                },
-              ),
-            ),
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.refresh,
+                      ),
+                      iconSize: 50,
+                      color: blueColor,
+                      splashColor: blueColor,
+                      onPressed: () {
+                        setState(() {
+                          isRefresh = true;
+                        });
+                        getListKategoriBloc..getListKategori();
+                      },
+                    ),
+                  ),
             Text(
               isRefresh
                   ? "Sedang Mengambil Data"
@@ -352,115 +403,34 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   }
 
   void _postData(context) async {
-    print(_selectedValue?.nama_kategori_transaksi);
-    // BlockPreference blockPreference = BlockPreference();
-    // await blockPreference.getDataAccount();
-    //
-    // if (nama_transaksi.isEmpty) {
-    //   return Snack("Nama Warga tidak boleh kosong.");
-    // }
-    // if (blok_rumah.isEmpty) {
-    //   return Snack("Blok Rumah tidak boleh kosong.");
-    // }
-    // if (nomor_rumah.isEmpty) {
-    //   return Snack("Nomor Rumah tidak boleh kosong.");
-    // }
-    // if (!EmailValidator.validate(email)) {
-    //   return Snack("Email tidak sesuai.");
-    // }
-    // if (nomor_hp.isEmpty) {
-    //   return Snack("Nomor HP tidak boleh kosong.");
-    // }
-    // if (status_pernikahan.isEmpty) {
-    //   return Snack("Status Pernikahan tidak boleh kosong.");
-    // }
-    // if (jenis_kelamin.isEmpty) {
-    //   return Snack("Jenis Kelamin tidak boleh kosong.");
-    // }
-    // if (id_rw.isEmpty) {
-    //   return Snack("RT tidak boleh kosong.");
-    // }
-    // if (id_rt.isEmpty) {
-    //   return Snack("RT tidak boleh kosong.");
-    // }
-    //
-    // BlocProvider.of<WargaBloc>(context).add(
-    //   WargaRequest(
-    //       uuid.v1(),
-    //       nama_transaksi,
-    //       blok_rumah,
-    //       nomor_rumah,
-    //       email,
-    //       nomor_hp,
-    //       is_rw,
-    //       is_rt,
-    //       id_rw,
-    //       id_rt,
-    //       blockPreference.idPerumahan ?? "",
-    //       status_pernikahan,
-    //       jenis_kelamin),
-    // );
-  }
-}
+    BlockPreference blockPreference = BlockPreference();
+    await blockPreference.getDataAccount();
 
-class ContentBottomSheetKategori extends StatelessWidget {
-  final KategoriResponse kategoriResponse;
-  const ContentBottomSheetKategori({
-    super.key,
-    required this.kategoriResponse,
-    required TextEditingController controllerNamaKategori,
-  }) : _controllerNamaKategori = controllerNamaKategori;
+    if (nama_transaksi.isEmpty) {
+      return Snack("Nama Transaksi tidak boleh kosong.");
+    }
+    if (kategori_transaksi.isEmpty) {
+      return Snack("Kategori Transaksi tidak boleh kosong.");
+    }
+    if (id_kasbon.isEmpty) {
+      return Snack("Kasbon tidak boleh kosong.");
+    }
+    if (nilai_transaksi.isEmpty) {
+      return Snack("Nilai Transaksi tidak boleh kosong.");
+    }
+    if (keterangan.isEmpty) {
+      return Snack("Keterangan Pernikahan tidak boleh kosong.");
+    }
 
-  final TextEditingController _controllerNamaKategori;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Flexible(
-          child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-            child: Text(
-              "Pilih Salah Satu Kategori",
-              style:
-                  regularTextStyle.copyWith(fontSize: 19, color: blueColor),
-            ),
-          ),
-        ),
-        Container(
-          // margin: EdgeInsets.only(top: 20),
-          height: MediaQuery.of(context).size.height * 0.4,
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: kategoriResponse.kategori.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                _controllerNamaKategori.text = kategoriResponse.kategori[index].nama_kategori_transaksi;
-                Navigator.pop(context);
-                },
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 20.h, right: 20.h, top: 5.h, bottom: 5.h),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: greyColorLight,
-                        borderRadius: BorderRadius.circular(12.r)),
-                    height: 50.h,
-                    child: Center(
-                      child: Text(
-                        kategoriResponse.kategori[index].nama_kategori_transaksi,
-                        style: regularTextStyle.copyWith(
-                            fontSize: 17, color: blueColor),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        )
-      ],
-    );
+    BlocProvider.of<PengeluaranBloc>(context).add(PengeluaranRequestAdd(
+        uuid.v1(),
+        nama_transaksi,
+        id_kategori,
+        id_kasbon,
+        kategori_transaksi,
+        DateTime.now().millisecondsSinceEpoch.toString(),
+        nilai_transaksi,
+        keterangan,
+        bukti_foto));
   }
 }
