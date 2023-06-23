@@ -29,7 +29,6 @@ class _PengeluaranPagesState extends State<PengeluaranPages> {
   var dataTest = ['Semua', 'Terbaru', 'A-z', 'Z-a'];
   bool isTapped = false;
 
-
   @override
   void dispose() {
     _debounce?.cancel();
@@ -82,7 +81,9 @@ class _PengeluaranPagesState extends State<PengeluaranPages> {
             ListShorting(
                 dataTest: dataTest,
                 onPressed: (index) {
-                  getListWargaBloc..getListWarga(GetListWargaRequest(AppConstant.valueShorting(dataTest[index]), ""));
+                  getListWargaBloc
+                    ..getListWarga(GetListWargaRequest(
+                        AppConstant.valueShorting(dataTest[index]), ""));
                 },
                 isTapped: isTapped,
                 isActive: 0),
@@ -93,7 +94,8 @@ class _PengeluaranPagesState extends State<PengeluaranPages> {
                 onChanged: (value) {
                   if (_debounce?.isActive ?? false) _debounce?.cancel();
                   _debounce = Timer(const Duration(milliseconds: 500), () {
-                    getListPengeluaranBloc..getListPengeluaran(GetListPengeluaranRequest(3, value));
+                    getListPengeluaranBloc
+                      ..getListPengeluaran(GetListPengeluaranRequest(3, value));
                   });
                 },
               ),

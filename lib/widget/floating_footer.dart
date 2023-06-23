@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/pages/login/login.dart';
+import 'package:kita_warga_apps/pages/profile/profile_pages.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -56,20 +57,32 @@ class FloatingFooter extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.person,
-                color: blueColor,
-                size: 30.sp,
-              ),
-              Text(
-                'Profil',
-                style:
-                    blackTextStyle.copyWith(color: blueColor, fontSize: 12.sp),
-              )
-            ],
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ProfilePages();
+                  },
+                ),
+              );
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person,
+                  color: blueColor,
+                  size: 30.sp,
+                ),
+                Text(
+                  'Profil',
+                  style: blackTextStyle.copyWith(
+                      color: blueColor, fontSize: 12.sp),
+                )
+              ],
+            ),
           ),
         ],
       ),

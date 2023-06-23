@@ -12,7 +12,7 @@ class AppConstant {
   static const String idPengurus = 'idPengurus';
   static const String isExpired = 'isExpired';
   static const String msgIxpired = 'Sesi Berakhir, Silahkan Login Ulang.';
-
+  static const String kasbon = 'Kasbon';
 
   static int valueShorting(String shorting) {
     switch (shorting) {

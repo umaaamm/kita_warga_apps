@@ -25,11 +25,11 @@ class Pengeluaran {
       : id_transaksi = json["id_transaksi"],
         nama_transaksi = json["nama_transaksi"],
         id_kategori = json["id_kategori"],
-        id_kasbon = json["id_kasbon"],
+        id_kasbon = json["id_kasbon"] ?? '',
         kategori_transaksi = json["kategori_transaksi"],
-        tanggal_transaksi = json["tanggal_transaksi"],
+        tanggal_transaksi = json["tanggal_transaksi"] ?? '0',
         nilai_transaksi = json["nilai_transaksi"],
-        keterangan = json["keterangan"],
+        keterangan = json["keterangan"] ?? '',
         bukti_foto = json["bukti_foto"];
 
   @override

@@ -23,7 +23,6 @@ class PengeluaranRepository {
   Future<GeneralResponsePost> addPengeluaran(PengeluaranRequestAdd pengeluaranRequestAdd) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-
     try {
       var params = {
         "id_transaksi": pengeluaranRequestAdd.id_transaksi,

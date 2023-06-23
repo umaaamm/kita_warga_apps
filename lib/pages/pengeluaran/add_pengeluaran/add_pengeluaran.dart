@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
+import 'package:kita_warga_apps/bloc/karyawan/get_list_karyawan.dart';
 import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
 import 'package:kita_warga_apps/bloc/kategori_bloc/get_list_kategori_bloc.dart';
 import 'package:kita_warga_apps/bloc/pengeluaran/get_list_pengeluaran.dart';
@@ -10,11 +11,13 @@ import 'package:kita_warga_apps/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:kita_warga_apps/components/alert_logout.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/karyawan/karyawan_response.dart';
 import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
 import 'package:kita_warga_apps/model/kasbon/list_kasbon_response.dart';
 import 'package:kita_warga_apps/model/kategori/kategori_response.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request.dart';
 import 'package:kita_warga_apps/model/pengeluaran/pengeluaran_request_add.dart';
+import 'package:kita_warga_apps/pages/pengeluaran/ContentBottomSheetKaryawan.dart';
 import 'package:kita_warga_apps/pages/pengeluaran/ContentBottomSheetKasbon.dart';
 import 'package:kita_warga_apps/pages/pengeluaran/ContentBottomSheetKategori.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
@@ -36,6 +39,7 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     // TODO: implement initState
     getListKategoriBloc..getListKategori();
     getListKasbonBloc..getListKasbon(GetListKasbonRequest(1, ""));
+    getListKaryawanBloc..getDashboardLastTrx();
     super.initState();
     setState(() {
       isRefresh = false;
@@ -45,7 +49,10 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
   bool isRefresh = false;
   final TextEditingController _controllerNamaKategori = TextEditingController();
   final TextEditingController _controllerKasbon = TextEditingController();
+  final TextEditingController _controllerKaryawan = TextEditingController();
+  final TextEditingController _controllerNilaiTransaksi = TextEditingController();
 
+  bool isReadOnly = false;
   var uuid = Uuid();
   String nama_transaksi = "",
       id_kategori = "",
@@ -54,7 +61,11 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
       keterangan = "",
       bukti_foto = "bukti_foto",
       id_kasbon = "",
-      kategori_transaksi = "";
+      kategori_transaksi = "",
+      nama_karyawan = "",
+      id_karyawan = "",
+      kasbon_selected = "",
+      kategori_selected="";
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +119,22 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                   labelText: 'Pilih Kategori Transaksi',
                   hintText: "Pilih Kategori Transaksi",
                   onChanged: (value) {
-                    nilai_transaksi = value;
+                    kategori_selected = value;
                   },
                 ),
-                TextInputBorderBottom(
+                if(kategori_transaksi == AppConstant.kasbon) TextInputBorderBottom(
+                  controllerText: _controllerKaryawan,
+                  onPressed: () {
+                    showBottomKaryawan(context, _controllerKaryawan);
+                  },
+                  readOnly: true,
+                  labelText: 'Pilih Nama Karyawan',
+                  hintText: "Pilih Nama Karyawan",
+                  onChanged: (value) {
+                    nama_karyawan = value;
+                  },
+                ),
+                if(kategori_transaksi == AppConstant.kasbon) TextInputBorderBottom(
                   controllerText: _controllerKasbon,
                   onPressed: () {
                     showBottomKasbon(context, _controllerKasbon);
@@ -120,10 +143,12 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
                   labelText: 'Pilih Kasbon',
                   hintText: "Pilih Kasbon",
                   onChanged: (value) {
-                    nilai_transaksi = value;
+                    kasbon_selected = value;
                   },
                 ),
                 TextInputBorderBottom(
+                  readOnly: isReadOnly,
+                  controllerText: _controllerNilaiTransaksi,
                     labelText: "Nilai Transaksi",
                     hintText: "Masukkan Nilai Transaksi",
                     onChanged: (value) {
@@ -172,6 +197,64 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     );
   }
 
+  Future<void> showBottomKaryawan(
+      BuildContext context, TextEditingController controller) {
+    return showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (BuildContext context) {
+        return StreamBuilder<KaryawanResponse>(
+          stream: getListKaryawanBloc.subject.stream,
+          builder: (context, AsyncSnapshot<KaryawanResponse> snapshot) {
+            if (!snapshot.hasData) {
+              return _buildLoadingWidget();
+            }
+
+            if (snapshot.hasError) {
+              if (snapshot.data!.responsExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(snapshot.error.toString());
+            }
+
+            final list = snapshot.data!;
+            if (list.error != null && list.error!.isNotEmpty) {
+              if (list.responsExpired.isExpired) {
+                return AlertLogout();
+              }
+              return _buildErrorWidget(list.error.toString());
+            }
+            ;
+
+            if (list.karyawan.isEmpty) {
+              return _buildNoDataWidget();
+            }
+
+            return ContentBottomSheetKaryawan(
+              controllerNamaKaryawan: controller,
+              karyawanResponse: list,
+              onPressed: (val) {
+                print(val.nama_karyawan);
+                getListKasbonBloc..getListKasbon(GetListKasbonRequest(4, val.id_karyawan));
+                _controllerKaryawan.text = val.nama_karyawan;
+                setState(() {
+                  id_karyawan = val.id_karyawan;
+                  nama_karyawan = val.nama_karyawan;
+                });
+                Future.delayed(Duration.zero, () {
+                  Navigator.pop(context);
+                });
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> showBottomKategori(
       BuildContext context, TextEditingController controller) {
     return showModalBottomSheet<void>(
@@ -213,7 +296,11 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
               kategoriResponse: list,
               onPressed: (val) {
                 _controllerNamaKategori.text = val.nama_kategori_transaksi;
+                _controllerNilaiTransaksi.text = "";
+                _controllerKaryawan.text = "";
+                _controllerKasbon.text = "";
                 setState(() {
+                  isReadOnly = false;
                   id_kategori = val.id_kategori;
                   kategori_transaksi = val.nama_kategori_transaksi;
                 });
@@ -269,7 +356,10 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
               listKasbonResponse: list,
               onPressed: (val) {
                 _controllerKasbon.text = val.detail_transaksi;
+                _controllerNilaiTransaksi.text = val.angsuran_per_bulan;
                 setState(() {
+                  nilai_transaksi = val.angsuran_per_bulan;
+                  isReadOnly = true;
                   id_kasbon = val.id_kasbon;
                 });
                 Navigator.pop(context);
@@ -412,7 +502,7 @@ class _AddPengeluaranPagesState extends State<AddPengeluaranPages> {
     if (kategori_transaksi.isEmpty) {
       return Snack("Kategori Transaksi tidak boleh kosong.");
     }
-    if (id_kasbon.isEmpty) {
+    if (id_kategori == AppConstant.kasbon && id_kasbon.isEmpty) {
       return Snack("Kasbon tidak boleh kosong.");
     }
     if (nilai_transaksi.isEmpty) {

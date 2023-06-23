@@ -4,29 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
 import 'package:kita_warga_apps/components/rounded_input_search.dart';
+import 'package:kita_warga_apps/model/karyawan/karyawan_response.dart';
 import 'package:kita_warga_apps/model/kasbon/list_kasbon_response.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/currency_format.dart';
 
-class ContentBottomSheetKasbon extends StatefulWidget {
-  final ListKasbonResponse listKasbonResponse;
+class ContentBottomSheetKaryawan extends StatefulWidget {
+  final KaryawanResponse karyawanResponse;
   final Function onPressed;
 
-  const ContentBottomSheetKasbon({
+  const ContentBottomSheetKaryawan({
     super.key,
     required this.onPressed,
-    required this.listKasbonResponse,
-    required TextEditingController controllerNamaKategori,
-  }) : _controllerKasbon = controllerNamaKategori;
+    required this.karyawanResponse,
+    required TextEditingController controllerNamaKaryawan,
+  }) : _controllerKaryawan = controllerNamaKaryawan;
 
-  final TextEditingController _controllerKasbon;
+  final TextEditingController _controllerKaryawan;
   @override
-  State<ContentBottomSheetKasbon> createState() =>
-      _ContentBottomSheetKategoriPagesState();
+  State<ContentBottomSheetKaryawan> createState() =>
+      _ContentBottomSheetKaryawanPagesState();
 }
 
-class _ContentBottomSheetKategoriPagesState
-    extends State<ContentBottomSheetKasbon> {
+class _ContentBottomSheetKaryawanPagesState
+    extends State<ContentBottomSheetKaryawan> {
 
   @override
   void dispose() {
@@ -42,7 +43,7 @@ class _ContentBottomSheetKategoriPagesState
           child: Padding(
             padding: EdgeInsets.only(left: 20, right: 20, top: 10),
             child: Text(
-              "Pilih Salah Satu Kasbon",
+              "Pilih Salah Satu Karyawan",
               style: regularTextStyle.copyWith(fontSize: 19, color: blueColor),
             ),
           ),
@@ -52,10 +53,10 @@ class _ContentBottomSheetKategoriPagesState
           height: MediaQuery.of(context).size.height * 0.4,
           child: ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: widget.listKasbonResponse.listKasbon.length,
+            itemCount: widget.karyawanResponse.karyawan.length,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: (){widget.onPressed(widget.listKasbonResponse.listKasbon[index]);},
+                onTap: (){widget.onPressed(widget.karyawanResponse.karyawan[index]);},
                 child: Padding(
                   padding: EdgeInsets.only(
                       left: 20.h, right: 20.h, top: 5.h, bottom: 5.h),
@@ -73,33 +74,16 @@ class _ContentBottomSheetKategoriPagesState
                           children: [
                             Text(
                               "Nama : " +
-                                  widget.listKasbonResponse
-                                      .listKasbon[index].nama_karyawan +
-                                  " - " +
-                                  CurrencyFormat.convertToIdr(
-                                      int.parse(widget.listKasbonResponse
-                                          .listKasbon[index].pinjaman),
-                                      0) +
-                                  " - " +
-                                  widget.listKasbonResponse.listKasbon[index].tenor +
-                                  " Bulan",
+                                  widget.karyawanResponse
+                                      .karyawan[index].nama_karyawan,
                               style: regularTextStyle.copyWith(
                                   fontSize: 16, color: blueColor),
                             ),
                             Text(
-                              "Angsuran perbulan : " +
-                                  CurrencyFormat.convertToIdr(
-                                      int.parse(widget.listKasbonResponse
-                                          .listKasbon[index]
-                                          .angsuran_per_bulan),
-                                      0),
-                              style: regularTextStyle.copyWith(
-                                  fontSize: 16, color: blueColor),
-                            ),
-                            Text(
-                              "Deskripsi : " +
-                                  widget.listKasbonResponse
-                                      .listKasbon[index].detail_transaksi,
+                              "Posisi : " +
+                                  widget.karyawanResponse
+                                          .karyawan[index]
+                                          .posisi,
                               style: regularTextStyle.copyWith(
                                   fontSize: 16, color: blueColor),
                             ),
