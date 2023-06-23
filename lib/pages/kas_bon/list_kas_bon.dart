@@ -10,6 +10,7 @@ import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
 import 'package:kita_warga_apps/model/kasbon/kasbon_delete_request.dart';
 import 'package:kita_warga_apps/model/kasbon/list_kasbon.dart';
 import 'package:kita_warga_apps/model/kasbon/list_kasbon_response.dart';
+import 'package:kita_warga_apps/pages/kas_bon/detail_kasbon/detail_kasbon.dart';
 import 'package:kita_warga_apps/repository/kasbon_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
@@ -185,14 +186,14 @@ class _ListKasBonState extends State<ListKasBon> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) {
-                            //       return DetailWarga(listWarga: listWarga[index]);
-                            //     },
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return DetailKasbon(listKasbon: list[index]);
+                                },
+                              ),
+                            );
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 10.h),

@@ -2,7 +2,7 @@ import 'package:kita_warga_apps/model/kasbon/kasbon_request_update.dart';
 
 class KasbonRequest extends StateKasbon {
   final String id_kasbon;
-  final String tangggal_transaksi;
+  final String tanggal_transaksi;
   final String nama_karyawan;
   final String id_karyawan;
   final String detail_transaksi;
@@ -13,7 +13,7 @@ class KasbonRequest extends StateKasbon {
 
   KasbonRequest(
     this.id_kasbon,
-    this.tangggal_transaksi,
+    this.tanggal_transaksi,
     this.nama_karyawan,
     this.id_karyawan,
     this.detail_transaksi,

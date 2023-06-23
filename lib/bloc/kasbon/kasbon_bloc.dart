@@ -20,7 +20,7 @@ class KasbonBloc extends Bloc<StateKasbon, AppServicesState> {
       GeneralResponsePost response = await kasbonRepository.addKasbon(
         KasbonRequest(
           event.id_kasbon,
-          event.tangggal_transaksi,
+          event.tanggal_transaksi,
           event.nama_karyawan,
           event.id_karyawan,
           event.detail_transaksi,
@@ -34,7 +34,18 @@ class KasbonBloc extends Bloc<StateKasbon, AppServicesState> {
       emit(successServices());
       return;
     } catch (e) {
-    print('object');
+      emit(errorServices(e.toString()));
+    }
+  }
+
+  Future deleteKasbon(KasbonDeleteRequest event, Emitter<AppServicesState> emit) async {
+    emit(loadingServices());
+    try {
+      GeneralResponsePost response = await kasbonRepository
+          .deleteKasbon(KasbonDeleteRequest(event.id_kasbon));
+      emit(successServices());
+      return;
+    } catch (e) {
       emit(errorServices(e.toString()));
     }
   }
@@ -64,17 +75,4 @@ class KasbonBloc extends Bloc<StateKasbon, AppServicesState> {
   //     emit(errorServices(e.toString()));
   //   }
   // }
-
-  Future deleteKasbon(
-      KasbonDeleteRequest event, Emitter<AppServicesState> emit) async {
-    emit(loadingServices());
-    try {
-      GeneralResponsePost response = await kasbonRepository
-          .deleteKasbon(KasbonDeleteRequest(event.id_kasbon));
-      emit(successServices());
-      return;
-    } catch (e) {
-      emit(errorServices(e.toString()));
-    }
-  }
 }

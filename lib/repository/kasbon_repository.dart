@@ -73,12 +73,13 @@ class KasbonRepository {
     try {
       var params = {
         "id_kasbon": kasbonRequest.id_kasbon,
+        'tanggal_transaksi': kasbonRequest.tanggal_transaksi,
         "nama_karyawan": kasbonRequest.nama_karyawan,
         "id_karyawan": kasbonRequest.id_karyawan,
         "detail_transaksi": kasbonRequest.detail_transaksi,
         "pinjaman": kasbonRequest.pinjaman,
         "tenor": kasbonRequest.tenor,
-        "angsurang_per_bulan": kasbonRequest.angsuran_per_bulan,
+        "angsuran_per_bulan": kasbonRequest.angsuran_per_bulan,
         "keterangan": kasbonRequest.keterangan,
       };
 
@@ -86,7 +87,7 @@ class KasbonRepository {
           data: jsonEncode(params),
           options: Options(
               headers: {"x-access-token": prefs.get(AppConstant.accessToken)}));
-      print('object ini ${response}');
+
       return GeneralResponsePost.fromJson(response.data);
     } catch (error, stacktrace) {
       if (error is DioError) {

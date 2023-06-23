@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,8 +8,10 @@ import 'package:kita_warga_apps/bloc/bloc_shared_preference.dart';
 import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
 import 'package:kita_warga_apps/bloc/kasbon/kasbon_bloc.dart';
 import 'package:kita_warga_apps/components/dropdown_component.dart';
+import 'package:kita_warga_apps/components/dropdown_karyawan.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/components/text_input_border_bottom.dart';
+import 'package:kita_warga_apps/model/karyawan/karyawan.dart';
 import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
 import 'package:kita_warga_apps/model/kasbon/kasbon_request.dart';
 import 'package:kita_warga_apps/pages/warga/title_warga.dart';
@@ -53,6 +57,7 @@ class _AddKasbonPagesState extends State<AddKasbonPages> {
   ];
 
   var uuid = Uuid();
+  Karyawan? _selectedValue;
   String dropdownValueTenor = listTenor.first;
   int tenor = 0;
   int pinjaman = 0;
@@ -95,17 +100,14 @@ class _AddKasbonPagesState extends State<AddKasbonPages> {
                 SizedBox(
                   height: ScreenUtil().setHeight(20),
                 ),
-                TextInputBorderBottom(
-                  labelText: "Nama Karyawan",
-                  hintText: "Masukkan nama karyawan",
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        nama_karyawan = value;
-                      },
-                    );
-                  },
-                ),
+                dropdownKaryawan(
+                    onChanged: (Karyawan? newValue) {
+                      setState(() {
+                        print(newValue!);
+                        _selectedValue = newValue!;
+                      });
+                    },
+                    dropdownValueParent: _selectedValue),
                 TextInputBorderBottom(
                   labelText: "Detail Transaksi",
                   hintText: "Masukkan Detail Transaksi",
@@ -160,7 +162,7 @@ class _AddKasbonPagesState extends State<AddKasbonPages> {
                   onChanged: (value) {
                     setState(
                       () {
-                        angsuran_per_bulan = value;
+                        angsuran_per_bulan = _controllerAngsuranPerBulan.text;
                       },
                     );
                   },
@@ -260,40 +262,41 @@ class _AddKasbonPagesState extends State<AddKasbonPages> {
   }
 
   void _postData(context) async {
-    BlockPreference blockPreference = BlockPreference();
-    await blockPreference.getDataAccount();
     DateTime currentDate = DateTime.now();
     int epochSeconds = (currentDate.millisecondsSinceEpoch / 1000).round();
-    if (nama_karyawan.isEmpty) {
+    String convertAngsuran =
+        _controllerAngsuranPerBulan.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    BlockPreference blockPreference = BlockPreference();
+    await blockPreference.getDataAccount();
+    if (_selectedValue!.id_karyawan.isEmpty) {
       return Snack("Nama Warga tidak boleh kosong.");
     }
     if (detail_transaksi.isEmpty) {
-      return Snack("Blok Rumah tidak boleh kosong.");
+      return Snack("Detail transaksi tidak boleh kosong.");
     }
     if (pinjaman.isNaN) {
-      return Snack("Nomor Rumah tidak boleh kosong.");
+      return Snack("Pinjaman tidak boleh kosong.");
     }
     if (tenor.isNaN) {
-      return Snack("Nomor HP tidak boleh kosong.");
-    }
-    if (_controllerAngsuranPerBulan.text.isEmpty) {
-      return Snack("Status Pernikahan tidak boleh kosong.");
+      return Snack("Tenor tidak boleh kosong.");
     }
     if (keterangan.isEmpty) {
-      return Snack("Jenis Kelamin tidak boleh kosong.");
+      return Snack("Keterangan tidak boleh kosong.");
     }
 
     BlocProvider.of<KasbonBloc>(context).add(
       KasbonRequest(
-          uuid.v1(),
-          epochSeconds.toString(),
-          'arif',
-          '0a08c662-0c0f-11ee-be56-0242ac120002',
-          detail_transaksi,
-          pinjaman.toString(),
-          tenor.toString(),
-          angsuran_per_bulan,
-          keterangan),
+        uuid.v1(),
+        epochSeconds.toString(),
+        _selectedValue!.nama_karyawan,
+        _selectedValue!.id_karyawan,
+        detail_transaksi,
+        pinjaman.toString(),
+        tenor.toString(),
+        convertAngsuran,
+        keterangan,
+      ),
     );
   }
 }
