@@ -5,6 +5,7 @@ import 'package:kita_warga_apps/bloc/app_states.dart';
 import 'package:kita_warga_apps/bloc/kasbon/get_list_kasbon.dart';
 import 'package:kita_warga_apps/bloc/kasbon/kasbon_bloc.dart';
 import 'package:kita_warga_apps/components/alert_logout.dart';
+import 'package:kita_warga_apps/components/list/list_dashboard_initials.dart';
 import 'package:kita_warga_apps/components/rounded_button.dart';
 import 'package:kita_warga_apps/model/kasbon/get_list_kasbon_request.dart';
 import 'package:kita_warga_apps/model/kasbon/kasbon_delete_request.dart';
@@ -14,8 +15,6 @@ import 'package:kita_warga_apps/pages/kas_bon/detail_kasbon/detail_kasbon.dart';
 import 'package:kita_warga_apps/repository/kasbon_repository.dart';
 import 'package:kita_warga_apps/theme.dart';
 import 'package:kita_warga_apps/utils/constant.dart';
-import 'package:kita_warga_apps/utils/currency_format.dart';
-import 'package:kita_warga_apps/utils/text_format.dart';
 
 class ListKasBon extends StatefulWidget {
   const ListKasBon({super.key});
@@ -185,90 +184,24 @@ class _ListKasBonState extends State<ListKasBon> {
                           ),
                         ),
                         child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return DetailKasbon(listKasbon: list[index]);
-                                },
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
-                            margin: EdgeInsets.only(
-                                left: 10.w,
-                                right: 10.w,
-                                bottom: index == list.length - 1 ? 75.h : 8.h),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.r)),
-                            child: Row(
-                              children: [
-                                Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                    ),
-                                    child: Center(
-                                      child: Container(
-                                          width: ScreenUtil().setWidth(70),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                            color: blueColor,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              TextFormat.getInitials(list[index]
-                                                  .nama_karyawan as String),
-                                              style: blackTextStyle.copyWith(
-                                                  color: whiteColor,
-                                                  fontSize: 45.sp),
-                                            ),
-                                          )),
-                                    )),
-                                Center(
-                                  child: Container(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          list[index].nama_karyawan,
-                                          style: regularTextStyle.copyWith(
-                                              fontSize: 21,
-                                              color: blueColor,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                        Text(
-                                          CurrencyFormat.convertToIdr(
-                                              int.parse(list[index]
-                                                  .angsuran_per_bulan),
-                                              0),
-                                          style: regularTextStyle.copyWith(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w700,
-                                              color: blueColor),
-                                        ),
-                                        Text(
-                                          CurrencyFormat.convertDateEpoch(
-                                              int.parse(list[index]
-                                                  .tanggal_transaksi)),
-                                          style: regularTextStyle.copyWith(
-                                              fontSize: 12, color: blueColor),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return DetailKasbon(
+                                        listKasbon: list[index]);
+                                  },
                                 ),
-                                Spacer(),
-                              ],
-                            ),
-                          ),
-                        ),
+                              );
+                            },
+                            child: ListDashboardInitials(
+                              date: list[index].tanggal_transaksi,
+                              name: list[index].nama_karyawan,
+                              value: list[index].angsuran_per_bulan,
+                              isDate: true,
+                              isCurrency: true,
+                            )),
                       ),
                     ));
               },
